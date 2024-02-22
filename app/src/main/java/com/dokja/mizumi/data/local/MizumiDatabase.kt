@@ -1,0 +1,44 @@
+package com.dokja.mizumi.data.local
+
+import android.content.Context
+import androidx.room.AutoMigration
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.dokja.mizumi.data.local.library.LibraryDao
+import com.dokja.mizumi.data.local.library.LibraryItem
+import com.dokja.mizumi.util.Constants
+
+@Database(
+    entities = [LibraryItem::class],
+    version = 2
+)
+abstract class MizumiDatabase : RoomDatabase() {
+
+    abstract fun getLibraryDao(): LibraryDao
+
+    companion object {
+
+        @Volatile
+        private var INSTANCE: MizumiDatabase? = null
+
+        fun getInstance(context: Context): MizumiDatabase {
+            /*
+            if the INSTANCE is not null, then return it,
+            if it is, then create the database and save
+            in instance variable then return it.
+            */
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    MizumiDatabase::class.java,
+                    Constants.DATABASE_NAME
+                ).build()
+                INSTANCE = instance
+                // return instance
+                instance
+            }
+        }
+    }
+
+}
