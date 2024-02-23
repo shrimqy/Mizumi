@@ -36,13 +36,12 @@ fun NavGraph(
             }
         }
 
-        /** Library Screen **/
         navigation(
             route = Route.BookNavigation.route,
-            startDestination = Route.HomeScreen.route
+            startDestination = Route.NavigationScreen.route
         ){
-            composable(route = Route.HomeScreen.route) {
-                LibraryScreen(navController = navController)
+            composable(route = Route.NavigationScreen.route) {
+                MizumiNavigator()
             }
         }
     }

@@ -12,9 +12,11 @@ sealed class Route(
     data object OnBoardingScreen: Route(
         route = "onBoardingScreen"
     )
-    data object HomeScreen: Route(route = "homeScreen")
-    data object History: Route(route = "history")
+    data object Library: Route(route = "libraryScreen")
+    data object Browse: Route(route = "browseScreen")
+    data object History: Route(route = "historyScreen")
+    data object More: Route(route = "moreScreen")
     data object AppStartNavigation: Route(route = "appStartNavigation")
     data object BookNavigation: Route(route = "bookNavigation")
-    data object BookNavigationScreen:  Route(route = "bookNavigator")
+    data object NavigationScreen:  Route(route = "Navigator")
 }

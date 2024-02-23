@@ -84,13 +84,13 @@ fun NewsBottomNavigationPreview() {
     val libraryAnimatedIcon = AnimatedImageVector.animatedVectorResource(R.drawable.anim_library_enter)
     val moreAnimatedIcon = AnimatedImageVector.animatedVectorResource(R.drawable.anim_more_enter)
     val browseAnimatedIcon = AnimatedImageVector.animatedVectorResource(R.drawable.anim_browse_enter)
-    val updatesAnimatedIcon = AnimatedImageVector.animatedVectorResource(R.drawable.anim_updates_enter)
+    val historyAnimatedIcon = AnimatedImageVector.animatedVectorResource(R.drawable.anim_history_enter)
 
     MizumiTheme(dynamicColor = false) {
         NavBar(items = listOf(
             NavigationItem(libraryAnimatedIcon, text = "Library"), // Placeholder icon
-            NavigationItem(updatesAnimatedIcon, text = "Updates"),
-            NavigationItem(updatesAnimatedIcon, text = "Browse"),
+            NavigationItem(historyAnimatedIcon, text = "History"),
+            NavigationItem(browseAnimatedIcon, text = "Browse"),
             NavigationItem(moreAnimatedIcon, text = "More"),
             // ... other items
         ), selectedItem = selectedItem , onItemClick = { selectedItem = it}) // Update selection
