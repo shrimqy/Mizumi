@@ -20,13 +20,12 @@ fun NavGraph(
     NavHost(
         navController = navController,
         startDestination = startDestination) {
+
+        /** Loading Screen **/
         navigation(
             route = Route.AppStartNavigation.route,
             startDestination = Route.OnBoardingScreen.route
         ){
-
-
-            /** Loading Screen **/
             composable(
                 route = Route.OnBoardingScreen.route
             ) {
@@ -37,6 +36,7 @@ fun NavGraph(
             }
         }
 
+        /** Library Screen **/
         navigation(
             route = Route.BookNavigation.route,
             startDestination = Route.HomeScreen.route

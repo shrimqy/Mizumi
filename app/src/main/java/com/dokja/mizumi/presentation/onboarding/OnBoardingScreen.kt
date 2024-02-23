@@ -23,9 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dokja.mizumi.presentation.Dimens.MediumPadding2
-import com.dokja.mizumi.presentation.common.OnTextButton
-import com.dokja.mizumi.presentation.common.OnboardButton
-import com.dokja.mizumi.presentation.common.PageIndicator
+import com.dokja.mizumi.presentation.components.OnTextButton
+import com.dokja.mizumi.presentation.components.OnboardButton
+import com.dokja.mizumi.presentation.components.PageIndicator
 import com.dokja.mizumi.presentation.onboarding.components.OnBoardingPage
 import kotlinx.coroutines.launch
 

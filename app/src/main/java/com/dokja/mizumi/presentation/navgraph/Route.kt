@@ -6,13 +6,15 @@ sealed class Route(
 //    val selectedIcon: ImageVector,
 //    val unselectedIcon: ImageVector,
 //    val iconTextId: Int,
-//    val titleTextId: Int,
+//    val titleText: Int,
     val route: String
 ){
-    object OnBoardingScreen: Route(route = "onBoardingScreen")
-    object HomeScreen: Route(route = "homeScreen")
-    object History: Route(route = "history")
-    object AppStartNavigation: Route(route = "appStartNavigation")
-    object BookNavigation: Route(route = "bookNavigation")
-    object BookNavigationScreen:  Route(route = "bookNavigatork")
+    data object OnBoardingScreen: Route(
+        route = "onBoardingScreen"
+    )
+    data object HomeScreen: Route(route = "homeScreen")
+    data object History: Route(route = "history")
+    data object AppStartNavigation: Route(route = "appStartNavigation")
+    data object BookNavigation: Route(route = "bookNavigation")
+    data object BookNavigationScreen:  Route(route = "bookNavigator")
 }

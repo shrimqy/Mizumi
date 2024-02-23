@@ -1,4 +1,4 @@
-package com.dokja.mizumi.presentation.common
+package com.dokja.mizumi.presentation.components
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
