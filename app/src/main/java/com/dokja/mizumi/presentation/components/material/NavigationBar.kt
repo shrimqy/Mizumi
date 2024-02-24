@@ -56,12 +56,13 @@ fun NavBar(
                 onClick = { onItemClick(index) },
                 icon = {
                     Column(horizontalAlignment = CenterHorizontally) {
-                        val imageVector = items[index].icon
-                        val atEnd = index == selectedItem  // Update based on selection
-                        Icon(painter = rememberAnimatedVectorPainter(
-                            animatedImageVector = imageVector,
-                            atEnd = atEnd
-                        ), contentDescription = null)
+                        items[index].icon?.let { imageVector -> // Only include icon if present
+                            val atEnd = index == selectedItem
+                            Icon(painter = rememberAnimatedVectorPainter(
+                                animatedImageVector = imageVector,
+                                atEnd = atEnd
+                            ), contentDescription = null)
+                        }
                         Spacer(modifier = Modifier.height(ExtraSmallPadding2))
                         Text(text = item.text, style = MaterialTheme.typography.labelSmall)
                     }
@@ -71,9 +72,10 @@ fun NavBar(
 }
 
 data class NavigationItem @OptIn(ExperimentalAnimationGraphicsApi::class) constructor(
-    val icon: AnimatedImageVector,
+    val icon: AnimatedImageVector?,
     val text: String
 )
+
 
 @OptIn(ExperimentalAnimationGraphicsApi::class)
 @Preview

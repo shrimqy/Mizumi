@@ -20,14 +20,13 @@ fun LibraryScreen(navController: NavController) {
     val viewModel: LibraryViewModel = hiltViewModel()
     val state = viewModel.allItems.observeAsState(listOf()).value
 
-    Scaffold(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.background),
+
     ) {
-        Box (
-            modifier = Modifier.padding(it)
-        ){
+        Box {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
