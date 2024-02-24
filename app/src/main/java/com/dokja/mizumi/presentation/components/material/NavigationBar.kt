@@ -46,16 +46,17 @@ fun NavBar(
 ) {
     NavigationBar(
         modifier = Modifier.fillMaxWidth(),
-        containerColor = NavigationBarDefaults.containerColor,
+        containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.contentColorFor(NavigationBarDefaults.containerColor),
+        windowInsets = NavigationBarDefaults.windowInsets,
         tonalElevation = NavigationBarDefaults.Elevation,
     ){
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 selected = index == selectedItem,
                 onClick = { onItemClick(index) },
+                alwaysShowLabel = true,
                 icon = {
-                    Column(horizontalAlignment = CenterHorizontally) {
                         items[index].icon?.let { imageVector -> // Only include icon if present
                             val atEnd = index == selectedItem
                             Icon(painter = rememberAnimatedVectorPainter(
@@ -63,12 +64,11 @@ fun NavBar(
                                 atEnd = atEnd
                             ), contentDescription = null)
                         }
-                        Spacer(modifier = Modifier.height(ExtraSmallPadding2))
-                        Text(text = item.text, style = MaterialTheme.typography.labelSmall)
-                    }
-                }) }
+                },
+                label = { Text(text = item.text, style = MaterialTheme.typography.labelMedium) }
+            )
+        }
     }
-
 }
 
 data class NavigationItem @OptIn(ExperimentalAnimationGraphicsApi::class) constructor(

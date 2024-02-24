@@ -1,13 +1,13 @@
 package com.dokja.mizumi.presentation.navgraph
 
-import androidx.compose.material3.Text
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
-import com.dokja.mizumi.presentation.library.LibraryScreen
 import com.dokja.mizumi.presentation.onboarding.OnBoardingScreen
 import com.dokja.mizumi.presentation.onboarding.OnBoardingViewModel
 
@@ -27,7 +27,8 @@ fun NavGraph(
             startDestination = Route.OnBoardingScreen.route
         ){
             composable(
-                route = Route.OnBoardingScreen.route
+                route = Route.OnBoardingScreen.route,
+                exitTransition = { fadeOut() }
             ) {
                 val viewModel: OnBoardingViewModel = hiltViewModel()
                 OnBoardingScreen(
@@ -40,7 +41,11 @@ fun NavGraph(
             route = Route.BookNavigation.route,
             startDestination = Route.NavigationScreen.route
         ){
-            composable(route = Route.NavigationScreen.route) {
+            composable(
+                route = Route.NavigationScreen.route,
+                enterTransition = { fadeIn() },
+                exitTransition = { fadeOut() }
+            ) {
                 MizumiNavigator()
             }
         }

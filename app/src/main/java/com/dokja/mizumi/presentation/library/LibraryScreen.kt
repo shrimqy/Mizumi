@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -24,7 +25,6 @@ fun LibraryScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-
     ) {
         Box {
             Column(
@@ -34,6 +34,7 @@ fun LibraryScreen(navController: NavController) {
                     .padding(bottom = 50.dp)
             ) {
                 if (state.isEmpty()) {
+
                     EmptyScreen(message = "Your library is empty")
                 }
             }

@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -28,9 +29,12 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            enableEdgeToEdge()
             MizumiTheme {
-                Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
+                Box(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colorScheme.background)
+                        .fillMaxSize()
+                ) {
                     val startDestination = viewModel.startDestination
                     NavGraph(startDestination = startDestination)
                 }

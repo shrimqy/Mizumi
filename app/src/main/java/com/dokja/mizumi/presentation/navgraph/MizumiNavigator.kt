@@ -3,6 +3,8 @@ package com.dokja.mizumi.presentation.navgraph
 import android.content.res.Configuration
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
@@ -37,8 +39,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.dokja.mizumi.R
+import com.dokja.mizumi.presentation.browse.BrowseScreen
 import com.dokja.mizumi.presentation.components.material.NavBar
 import com.dokja.mizumi.presentation.components.material.NavigationItem
+import com.dokja.mizumi.presentation.history.HistoryScreen
 import com.dokja.mizumi.presentation.library.LibraryScreen
 import com.dokja.mizumi.presentation.theme.MizumiTheme
 
@@ -71,10 +75,9 @@ fun MizumiNavigator() {
         else -> 0
     }
 
-    Scaffold( modifier = Modifier.padding(top = 7.dp),
+    Scaffold(modifier = Modifier.padding(top = 7.dp),
 
         topBar = {
-            Log.d("MizumiNavigator", "TopBar about to be rendered, selected item text: ${navigationItem[selectedItem].text}")
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
@@ -120,8 +123,23 @@ fun MizumiNavigator() {
             startDestination = Route.Library.route,
             modifier = Modifier.padding(bottom = bottomPadding)
         ) {
-            composable(route = Route.Library.route) { backStackState ->
+            composable(
+                route = Route.Library.route,
+
+            ) { backStackState ->
                 LibraryScreen(navController = navController)
+            }
+            composable(
+                route = Route.History.route,
+            ) {
+                OnBackClickStateSaver(navController = navController)
+                HistoryScreen()
+            }
+            composable(
+                route = Route.Browse.route,
+            ) {
+                OnBackClickStateSaver(navController = navController)
+                BrowseScreen()
             }
         }
     }
