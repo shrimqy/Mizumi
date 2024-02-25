@@ -1,50 +1,43 @@
 package com.dokja.mizumi.presentation.navgraph
 
-import android.content.res.Configuration
-import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.dokja.mizumi.R
 import com.dokja.mizumi.presentation.browse.BrowseScreen
 import com.dokja.mizumi.presentation.components.material.NavBar
 import com.dokja.mizumi.presentation.components.material.NavigationItem
+import com.dokja.mizumi.presentation.components.material.SearchBar
 import com.dokja.mizumi.presentation.history.HistoryScreen
 import com.dokja.mizumi.presentation.library.LibraryScreen
-import com.dokja.mizumi.presentation.theme.MizumiTheme
 
 @OptIn(ExperimentalAnimationGraphicsApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -75,16 +68,59 @@ fun MizumiNavigator() {
         else -> 0
     }
 
-    Scaffold(modifier = Modifier.padding(top = 7.dp),
-
+    Scaffold(modifier = Modifier.padding(top = 10.dp),
         topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = colorResource(id = R.color.display_small),
-                ),
-                title = { Text(text = navigationItem[selectedItem].text) }
-            )
+            Column {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        titleContentColor = colorResource(id = R.color.display_small),
+                    ),
+                    title = { Text(text = navigationItem[selectedItem].text) },
+                )
+                var text by remember { mutableStateOf("") }
+                var active by remember { mutableStateOf(false) }
+                SearchBar(
+                    modifier = Modifier,
+                    query = text,
+                    onQueryChange = { text = it },
+                    onSearch = { active = false },
+                    active = active,
+                    onActiveChange = { active = it },
+                    placeholder = {
+                        Text(text = "Search Books")
+                    },
+                    leadingIcon = {
+                        if (!active) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search Icon"
+                            )
+                        } else {
+                            Icon(
+                                modifier = Modifier.clickable { active = false },
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                contentDescription = "Search Icon"
+                            )
+                        }
+                    },
+                    trailingIcon = {
+                        if (active) {
+                            Icon(
+                                modifier = Modifier.clickable {
+                                    if (text.isNotEmpty()) {
+                                        text = ""
+                                    } else {
+                                        active = false
+                                    }
+                                },
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Search Icon"
+                            )
+                        }
+                    },
+                )
+            }
+            
         },
 
         bottomBar = {
@@ -167,4 +203,5 @@ fun OnBackClickStateSaver(navController: NavController) {
         )
     }
 }
+
 
