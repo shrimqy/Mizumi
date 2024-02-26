@@ -1,6 +1,7 @@
 package com.dokja.mizumi.presentation.navgraph
 
-import androidx.compose.animation.fadeIn
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,7 +20,8 @@ fun NavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = startDestination) {
+        startDestination = startDestination,
+    ) {
 
         /** Loading Screen **/
         navigation(
@@ -43,8 +45,8 @@ fun NavGraph(
         ){
             composable(
                 route = Route.NavigationScreen.route,
-                enterTransition = { fadeIn() },
-                exitTransition = { fadeOut() }
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None }
             ) {
                 MizumiNavigator()
             }

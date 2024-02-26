@@ -1,18 +1,18 @@
 package com.dokja.mizumi.presentation.navgraph
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -35,9 +35,36 @@ import com.dokja.mizumi.R
 import com.dokja.mizumi.presentation.browse.BrowseScreen
 import com.dokja.mizumi.presentation.components.material.NavBar
 import com.dokja.mizumi.presentation.components.material.NavigationItem
-import com.dokja.mizumi.presentation.components.material.SearchBar
 import com.dokja.mizumi.presentation.history.HistoryScreen
 import com.dokja.mizumi.presentation.library.LibraryScreen
+
+
+private const val NAVIGATION_ANIM_DURATION = 300
+private const val FADEIN_ANIM_DURATION = 400
+private fun enterTransition() = slideInHorizontally(
+    initialOffsetX = { NAVIGATION_ANIM_DURATION }, animationSpec = tween(
+        durationMillis = NAVIGATION_ANIM_DURATION, easing = FastOutSlowInEasing
+    )
+) + fadeIn(animationSpec = tween(NAVIGATION_ANIM_DURATION))
+
+private fun exitTransition() = slideOutHorizontally(
+    targetOffsetX = { -NAVIGATION_ANIM_DURATION }, animationSpec = tween(
+        durationMillis = NAVIGATION_ANIM_DURATION, easing = FastOutSlowInEasing
+    )
+) + fadeOut(animationSpec = tween(NAVIGATION_ANIM_DURATION))
+
+private fun popEnterTransition() = slideInHorizontally(
+    initialOffsetX = { -NAVIGATION_ANIM_DURATION }, animationSpec = tween(
+        durationMillis = NAVIGATION_ANIM_DURATION, easing = FastOutSlowInEasing
+    )
+) + fadeIn(animationSpec = tween(NAVIGATION_ANIM_DURATION))
+
+private fun popExitTransition() = slideOutHorizontally(
+    targetOffsetX = { NAVIGATION_ANIM_DURATION }, animationSpec = tween(
+        durationMillis = NAVIGATION_ANIM_DURATION, easing = FastOutSlowInEasing
+    )
+) + fadeOut(animationSpec = tween(NAVIGATION_ANIM_DURATION))
+
 
 @OptIn(ExperimentalAnimationGraphicsApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -68,62 +95,31 @@ fun MizumiNavigator() {
         else -> 0
     }
 
-    Scaffold(modifier = Modifier.padding(top = 10.dp),
+    //Hide the bottom navigation when the user is in the details screen
+    val isBarVisible = remember(key1 = backStackState) {
+        backStackState?.destination?.route == Route.Library.route ||
+                backStackState?.destination?.route == Route.Browse.route ||
+                backStackState?.destination?.route == Route.History.route ||
+                backStackState?.destination?.route == Route.More.route
+    }
+
+    Scaffold(modifier = Modifier.padding(top = 1.dp),
         topBar = {
             Column {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        titleContentColor = colorResource(id = R.color.display_small),
-                    ),
-                    title = { Text(text = navigationItem[selectedItem].text) },
-                )
-                var text by remember { mutableStateOf("") }
-                var active by remember { mutableStateOf(false) }
-                SearchBar(
-                    modifier = Modifier,
-                    query = text,
-                    onQueryChange = { text = it },
-                    onSearch = { active = false },
-                    active = active,
-                    onActiveChange = { active = it },
-                    placeholder = {
-                        Text(text = "Search Books")
-                    },
-                    leadingIcon = {
-                        if (!active) {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = "Search Icon"
-                            )
-                        } else {
-                            Icon(
-                                modifier = Modifier.clickable { active = false },
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                                contentDescription = "Search Icon"
-                            )
-                        }
-                    },
-                    trailingIcon = {
-                        if (active) {
-                            Icon(
-                                modifier = Modifier.clickable {
-                                    if (text.isNotEmpty()) {
-                                        text = ""
-                                    } else {
-                                        active = false
-                                    }
-                                },
-                                imageVector = Icons.Default.Clear,
-                                contentDescription = "Search Icon"
-                            )
-                        }
-                    },
-                )
+                if (isBarVisible) {
+                    TopAppBar(
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            titleContentColor = colorResource(id = R.color.display_small),
+                        ),
+                        title = { Text(text = navigationItem[selectedItem].text) },
+                    )
+                }
             }
             
         },
 
         bottomBar = {
+            if (isBarVisible) {
                 NavBar(
                     items = navigationItem,
                     selectedItem = selectedItem,
@@ -149,19 +145,23 @@ fun MizumiNavigator() {
                                 route = Route.More.route
                             )
                         }
-                    })
-
+                    }
+                )
+            }
         }
     ) {
         val bottomPadding = it.calculateBottomPadding()
         NavHost(
             navController = navController,
             startDestination = Route.Library.route,
-            modifier = Modifier.padding(bottom = bottomPadding)
+            modifier = Modifier.padding(it),
+            enterTransition = { fadeIn(animationSpec = tween(FADEIN_ANIM_DURATION)) }, // Adjust as needed
+            exitTransition = { fadeOut(animationSpec = tween(FADEIN_ANIM_DURATION)) },
+            popEnterTransition = { popEnterTransition() }, // Use for the reverse pop-up effect
+            popExitTransition = { popExitTransition() },
         ) {
             composable(
                 route = Route.Library.route,
-
             ) { backStackState ->
                 LibraryScreen(navController = navController)
             }
@@ -182,10 +182,11 @@ fun MizumiNavigator() {
 }
 
 
+
 private fun navigateToTab(navController: NavController, route: String) {
     navController.navigate(route) {
-        navController.graph.startDestinationRoute?.let { screenRoute ->
-            popUpTo(screenRoute) {
+        navController.graph.startDestinationRoute?.let { screen_route ->
+            popUpTo(screen_route) {
                 saveState = true
             }
         }
