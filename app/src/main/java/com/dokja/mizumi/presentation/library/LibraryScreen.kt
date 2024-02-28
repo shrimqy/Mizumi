@@ -1,7 +1,6 @@
 package com.dokja.mizumi.presentation.library
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,8 +9,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,13 +22,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.dokja.mizumi.presentation.common.screens.EmptyScreen
 import com.dokja.mizumi.presentation.components.material.SearchBar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LibraryScreen(navController: NavController) {
+fun LibraryScreen(
+) {
     val viewModel: LibraryViewModel = hiltViewModel()
     val state = viewModel.allItems.observeAsState(listOf()).value
 
@@ -69,33 +67,38 @@ fun LibraryScreen(navController: NavController) {
                                 contentDescription = "Search Icon"
                             )
                         } else {
-                            Icon(
-                                modifier = Modifier.clickable { active = false },
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                                contentDescription = "Search Icon"
-                            )
+                            IconButton(onClick = { active = false }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                    contentDescription = "Back icon"
+                                )
+                            }
+
                         }
                     },
                     trailingIcon = {
                         if (active and text.isNotEmpty()) {
-                            Icon(
-                                modifier = Modifier.clickable {
-                                    if (text.isNotEmpty()) {
-                                        text = ""
-                                    }
-                                },
-                                imageVector = Icons.Default.Clear,
-                                contentDescription = "Search Icon"
-                            )
+                            IconButton(onClick = {
+                                if (text.isNotEmpty()) {
+                                    text = ""
+                                }
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = "Clear Icon"
+                                )
+                            }
+
                         }
                     },
                 )
-
 
                 if (state.isEmpty()) {
 
                     EmptyScreen(message = "Your library is empty")
                 }
+
+
             }
         }
     }

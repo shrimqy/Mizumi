@@ -1,6 +1,8 @@
 package com.dokja.mizumi.presentation.navgraph
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -10,21 +12,33 @@ import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.outlined.FileDownload
+import androidx.compose.material.icons.outlined.QueryStats
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -66,6 +80,11 @@ private fun popExitTransition() = slideOutHorizontally(
 ) + fadeOut(animationSpec = tween(NAVIGATION_ANIM_DURATION))
 
 
+data class OverflowItems(
+    val text: String
+)
+
+
 @OptIn(ExperimentalAnimationGraphicsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MizumiNavigator() {
@@ -85,7 +104,7 @@ fun MizumiNavigator() {
     val navController = rememberNavController()
     val backStackState = navController.currentBackStackEntryAsState().value
     var selectedItem by rememberSaveable {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
     selectedItem = when (backStackState?.destination?.route) {
         Route.Library.route -> 0
@@ -103,19 +122,79 @@ fun MizumiNavigator() {
                 backStackState?.destination?.route == Route.More.route
     }
 
-    Scaffold(modifier = Modifier.padding(top = 1.dp),
+    val isImportVisible = remember(key1 = backStackState) {
+        backStackState?.destination?.route == Route.Library.route
+    }
+
+
+    var isOverflowExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    Scaffold(modifier = Modifier
+        .fillMaxSize()
+        .padding(
+            top = 1.dp
+        ),
         topBar = {
-            Column {
                 if (isBarVisible) {
                     TopAppBar(
                         colors = TopAppBarDefaults.topAppBarColors(
                             titleContentColor = colorResource(id = R.color.display_small),
                         ),
                         title = { Text(text = navigationItem[selectedItem].text) },
+                        actions = {
+                            Row {
+                                IconButton(onClick = { /*TODO*/ }) {
+                                    Icon(imageVector = Icons.Default.FilterList, contentDescription = "Filter Icon")
+                                }
+                                IconButton(onClick = { isOverflowExpanded = true }) {
+                                    Icon(painter = painterResource(id = R.drawable.ic_overflow_24dp), contentDescription = "Overflow")
+                                }
+                                DropdownMenu(
+                                    expanded = isOverflowExpanded,
+                                    onDismissRequest = { isOverflowExpanded = false },
+                                ) {
+                                    DropdownMenuItem(
+                                        text = { Text(text = "Turn On Incognito Mode") },
+                                        onClick = { /*TODO*/ },
+                                        leadingIcon = {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.eyeglasses_fill0_wght400_grad0_opsz24),
+                                                contentDescription = "Incognito Icon"
+                                            )
+                                        }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(text = "Settings") },
+                                        onClick = { /*TODO*/ },
+                                        leadingIcon = {
+                                            Icon(imageVector = Icons.Outlined.Settings, contentDescription = "Import Icon")
+                                        }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(text = "Stats") },
+                                        onClick = { /*TODO*/ },
+                                        leadingIcon = {
+                                            Icon(imageVector = Icons.Outlined.QueryStats, contentDescription = "Import Icon")
+                                        }
+                                    )
+                                    if (isImportVisible) {
+                                        DropdownMenuItem(
+                                            text = { Text(text = "Import Book") },
+                                            onClick = { /*TODO*/ },
+                                            leadingIcon = {
+                                                Icon(imageVector = Icons.Outlined.FileDownload, contentDescription = "Import Icon")
+                                            }
+                                        )
+                                    }
+
+
+                                }
+                            }
+                        }
                     )
                 }
-            }
-            
         },
 
         bottomBar = {
@@ -150,20 +229,19 @@ fun MizumiNavigator() {
             }
         }
     ) {
-        val bottomPadding = it.calculateBottomPadding()
         NavHost(
             navController = navController,
             startDestination = Route.Library.route,
             modifier = Modifier.padding(it),
-            enterTransition = { fadeIn(animationSpec = tween(FADEIN_ANIM_DURATION)) }, // Adjust as needed
-            exitTransition = { fadeOut(animationSpec = tween(FADEIN_ANIM_DURATION)) },
-            popEnterTransition = { popEnterTransition() }, // Use for the reverse pop-up effect
-            popExitTransition = { popExitTransition() },
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None },
         ) {
             composable(
                 route = Route.Library.route,
-            ) { backStackState ->
-                LibraryScreen(navController = navController)
+            ) {
+                LibraryScreen()
             }
             composable(
                 route = Route.History.route,
