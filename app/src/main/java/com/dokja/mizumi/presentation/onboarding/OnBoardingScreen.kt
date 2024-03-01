@@ -1,6 +1,11 @@
 package com.dokja.mizumi.presentation.onboarding
 
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,17 +28,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dokja.mizumi.presentation.Dimens.MediumPadding2
-import com.dokja.mizumi.presentation.components.OnTextButton
-import com.dokja.mizumi.presentation.components.OnboardButton
-import com.dokja.mizumi.presentation.components.PageIndicator
+import com.dokja.mizumi.presentation.common.material.OnTextButton
+import com.dokja.mizumi.presentation.common.material.OnboardButton
+import com.dokja.mizumi.presentation.common.material.PageIndicator
 import com.dokja.mizumi.presentation.onboarding.components.OnBoardingPage
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnBoardingScreen(
     onEvent: (OnBoardingEvent) -> Unit
 ) {
+    val notificationPermissionResultLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {isGranted ->
+            if (isGranted) {
+                onEvent(OnBoardingEvent.SaveAppEntry)
+            }
+            else
+                onEvent(OnBoardingEvent.SaveAppEntry)
+        }
+    )
     Box(
         modifier = Modifier.fillMaxSize(),
         Alignment.Center
@@ -96,7 +112,9 @@ fun OnBoardingScreen(
                         onClick = {
                             scope.launch {
                                 if (pagerState.currentPage == 2) {
-                                    onEvent(OnBoardingEvent.SaveAppEntry)
+                                    notificationPermissionResultLauncher.launch(
+                                        Manifest.permission.POST_NOTIFICATIONS
+                                    )
                                 }else{
                                     pagerState.animateScrollToPage(
                                         page = pagerState.currentPage + 1

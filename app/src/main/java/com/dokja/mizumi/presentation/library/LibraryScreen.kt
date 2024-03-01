@@ -22,8 +22,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.dokja.mizumi.presentation.common.material.SearchBar
 import com.dokja.mizumi.presentation.common.screens.EmptyScreen
-import com.dokja.mizumi.presentation.components.material.SearchBar
 
 @Composable
 fun LibraryScreen(

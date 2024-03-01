@@ -1,6 +1,11 @@
 package com.dokja.mizumi.presentation.navgraph
 
+import android.net.Uri
+import android.os.Build
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -47,10 +52,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.dokja.mizumi.R
 import com.dokja.mizumi.presentation.browse.BrowseScreen
-import com.dokja.mizumi.presentation.components.material.NavBar
-import com.dokja.mizumi.presentation.components.material.NavigationItem
+import com.dokja.mizumi.presentation.common.material.NavBar
+import com.dokja.mizumi.presentation.common.material.NavigationItem
 import com.dokja.mizumi.presentation.history.HistoryScreen
 import com.dokja.mizumi.presentation.library.LibraryScreen
+import com.dokja.mizumi.util.onDoImportEPUB
 
 
 private const val NAVIGATION_ANIM_DURATION = 300
@@ -80,11 +86,8 @@ private fun popExitTransition() = slideOutHorizontally(
 ) + fadeOut(animationSpec = tween(NAVIGATION_ANIM_DURATION))
 
 
-data class OverflowItems(
-    val text: String
-)
 
-
+@RequiresApi(Build.VERSION_CODES.R)
 @OptIn(ExperimentalAnimationGraphicsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MizumiNavigator() {
@@ -106,6 +109,9 @@ fun MizumiNavigator() {
     var selectedItem by rememberSaveable {
         mutableIntStateOf(0)
     }
+
+
+
     selectedItem = when (backStackState?.destination?.route) {
         Route.Library.route -> 0
         Route.History.route -> 1
@@ -130,6 +136,14 @@ fun MizumiNavigator() {
     var isOverflowExpanded by remember {
         mutableStateOf(false)
     }
+
+    var selectedDocumentURI by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val documentPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) {uri ->
+        if(uri == null) return@rememberLauncherForActivityResult
+    }
+
 
     Scaffold(modifier = Modifier
         .fillMaxSize()
@@ -182,7 +196,11 @@ fun MizumiNavigator() {
                                     if (isImportVisible) {
                                         DropdownMenuItem(
                                             text = { Text(text = "Import Book") },
-                                            onClick = { /*TODO*/ },
+                                            onClick = onDoImportEPUB()
+//                                                documentPicker.launch(
+//                                                    arrayOf("application/epub+zip")
+//                                                )
+                                            ,
                                             leadingIcon = {
                                                 Icon(imageVector = Icons.Outlined.FileDownload, contentDescription = "Import Icon")
                                             }

@@ -11,7 +11,6 @@ fun HistoryScreen() {
     val state = viewModel.allItems.observeAsState(listOf()).value
 
     if (state.isEmpty()) {
-
         EmptyScreen(message = "Your library is empty")
     }
 }

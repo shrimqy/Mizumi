@@ -1,4 +1,4 @@
-package com.dokja.mizumi.presentation.components.material
+package com.dokja.mizumi.presentation.common.material
 
 import android.content.res.Configuration
 import androidx.activity.compose.BackHandler

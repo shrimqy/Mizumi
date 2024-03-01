@@ -1,4 +1,4 @@
-package com.dokja.mizumi.presentation.components
+package com.dokja.mizumi.presentation.common.material
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
