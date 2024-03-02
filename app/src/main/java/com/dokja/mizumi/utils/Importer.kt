@@ -1,11 +1,11 @@
-package com.dokja.mizumi.util
+package com.dokja.mizumi.utils
 
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.dokja.mizumi.epub.EpubImportService
+import com.dokja.mizumi.services.EpubImportService
 
 @Composable
 fun onDoImportEPUB(): () -> Unit {

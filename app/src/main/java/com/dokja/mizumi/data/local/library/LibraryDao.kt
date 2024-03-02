@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.dokja.mizumi.data.BookWithContext
+import com.dokja.mizumi.data.local.library.LibraryItem
 import kotlinx.coroutines.flow.Flow
 
 @Dao

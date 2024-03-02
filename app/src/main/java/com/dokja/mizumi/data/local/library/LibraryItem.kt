@@ -13,7 +13,7 @@ data class LibraryItem(
     val completed: Boolean = false,
     val lastReadChapter: String? = null,
     val lastReadEpochTimeMilli: Long = 0,
-) {
+)
 
 //    fun fileExist(): Boolean {
 //        val file = File(filePath)
@@ -42,4 +42,3 @@ data class LibraryItem(
 //            false
 //        }
 //    }
-}

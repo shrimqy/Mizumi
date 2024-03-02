@@ -56,7 +56,7 @@ import com.dokja.mizumi.presentation.common.material.NavBar
 import com.dokja.mizumi.presentation.common.material.NavigationItem
 import com.dokja.mizumi.presentation.history.HistoryScreen
 import com.dokja.mizumi.presentation.library.LibraryScreen
-import com.dokja.mizumi.util.onDoImportEPUB
+import com.dokja.mizumi.utils.onDoImportEPUB
 
 
 private const val NAVIGATION_ANIM_DURATION = 300

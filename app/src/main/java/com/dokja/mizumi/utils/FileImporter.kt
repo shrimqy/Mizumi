@@ -1,4 +1,4 @@
-package com.dokja.mizumi.util
+package com.dokja.mizumi.utils
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

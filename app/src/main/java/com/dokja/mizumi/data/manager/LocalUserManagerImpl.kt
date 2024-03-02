@@ -7,8 +7,8 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.dokja.mizumi.domain.manager.LocalUserManager
-import com.dokja.mizumi.util.Constants
-import com.dokja.mizumi.util.Constants.USER_SETTINGS
+import com.dokja.mizumi.utils.Constants
+import com.dokja.mizumi.utils.Constants.USER_SETTINGS
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

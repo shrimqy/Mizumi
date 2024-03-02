@@ -4,7 +4,7 @@ import com.dokja.mizumi.data.local.library.LibraryItem
 import com.dokja.mizumi.epub.EpubBook
 import com.dokja.mizumi.repository.AppFileResolver
 import com.dokja.mizumi.repository.AppRepository
-import com.dokja.mizumi.util.fileImporter
+import com.dokja.mizumi.utils.fileImporter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

@@ -9,7 +9,7 @@ class ChapterBodyRepository(
     private val operations: AppDatabaseOperations,
     private val bookChaptersRepository: BookChaptersRepository,
 
-) {
+    ) {
     suspend fun getAll() = chapterBodyDao.getAll()
     suspend fun insertReplace(chapterBodies: List<ChapterBody>) =
         chapterBodyDao.insertReplace(chapterBodies)

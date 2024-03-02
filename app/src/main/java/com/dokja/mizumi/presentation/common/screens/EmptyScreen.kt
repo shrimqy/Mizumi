@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.dokja.mizumi.presentation.util.secondaryItemAlpha
+import com.dokja.mizumi.presentation.utils.secondaryItemAlpha
 import kotlin.random.Random
 
 @Composable

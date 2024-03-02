@@ -65,7 +65,7 @@
         </activity>
 
         <service
-            android:name=".epub.EpubImportService"
+            android:name=".services.EpubImportService"
             android:foregroundServiceType="dataSync"
             android:exported="false"
             />

@@ -11,7 +11,7 @@ import com.dokja.mizumi.data.local.chapter.ChapterBodyDao
 import com.dokja.mizumi.data.local.chapter.ChapterDao
 import com.dokja.mizumi.data.local.library.LibraryDao
 import com.dokja.mizumi.data.local.library.LibraryItem
-import com.dokja.mizumi.util.Constants
+import com.dokja.mizumi.utils.Constants
 
 
 /**

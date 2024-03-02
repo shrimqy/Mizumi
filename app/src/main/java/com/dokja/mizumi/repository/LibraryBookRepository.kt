@@ -6,7 +6,7 @@ import com.dokja.mizumi.data.local.AppDatabaseOperations
 import com.dokja.mizumi.data.local.library.LibraryDao
 import com.dokja.mizumi.data.local.library.LibraryItem
 import com.dokja.mizumi.di.AppCoroutineScope
-import com.dokja.mizumi.util.fileImporter
+import com.dokja.mizumi.utils.fileImporter
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

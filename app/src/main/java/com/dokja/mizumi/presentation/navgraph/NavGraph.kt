@@ -1,5 +1,7 @@
 package com.dokja.mizumi.presentation.navgraph
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeOut
@@ -12,6 +14,7 @@ import androidx.navigation.navigation
 import com.dokja.mizumi.presentation.onboarding.OnBoardingScreen
 import com.dokja.mizumi.presentation.onboarding.OnBoardingViewModel
 
+@RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun NavGraph(
     startDestination: String

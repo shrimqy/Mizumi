@@ -1,4 +1,4 @@
-package com.dokja.mizumi.presentation.util
+package com.dokja.mizumi.presentation.utils
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.MaterialTheme

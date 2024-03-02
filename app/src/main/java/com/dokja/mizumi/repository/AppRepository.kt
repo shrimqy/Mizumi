@@ -8,7 +8,7 @@ import com.dokja.mizumi.data.local.chapter.Chapter
 import com.dokja.mizumi.data.local.library.LibraryItem
 import com.dokja.mizumi.epub.epubParser
 import com.dokja.mizumi.isContentUri
-import com.dokja.mizumi.util.tryAsResponse
+import com.dokja.mizumi.utils.tryAsResponse
 import dagger.hilt.android.qualifiers.ApplicationContext
 import epubImporter
 import kotlinx.coroutines.Dispatchers

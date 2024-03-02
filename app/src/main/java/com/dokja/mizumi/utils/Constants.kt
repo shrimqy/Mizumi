@@ -1,4 +1,4 @@
-package com.dokja.mizumi.util
+package com.dokja.mizumi.utils
 
 object Constants {
     const val USER_SETTINGS = "userSettings"
