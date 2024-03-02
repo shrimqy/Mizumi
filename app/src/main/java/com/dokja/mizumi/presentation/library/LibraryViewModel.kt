@@ -15,5 +15,7 @@ class LibraryViewModel @Inject constructor(
     private val appRepository: AppRepository,
 ) : ViewModel() {
     val allItems: LiveData<List<LibraryItem>> = libraryDao.getAllItems()
+
+
     fun getBook(bookUrl: String) = appRepository.libraryBooks.getFlow(bookUrl).filterNotNull()
 }

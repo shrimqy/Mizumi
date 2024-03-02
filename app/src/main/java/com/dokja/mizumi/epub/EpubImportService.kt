@@ -1,12 +1,14 @@
 package com.dokja.mizumi.epub
 
 import android.app.ActivityManager
+import android.app.Notification
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.IBinder
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.dokja.mizumi.repository.AppFileResolver
 import com.dokja.mizumi.repository.AppRepository
@@ -63,6 +65,9 @@ class EpubImportService : Service() {
         val intentData = IntentData(intent)
         job = CoroutineScope(Dispatchers.IO).launch {
             tryAsResponse {
+
+                startForeground(1, Notification())
+
                 val inputStream = contentResolver.openInputStream(intentData.uri) ?: return@tryAsResponse
 
                 val fileName = contentResolver.query(
@@ -73,7 +78,7 @@ class EpubImportService : Service() {
                     null,
                     null
                 ).asSequence().map { it.getString(0) }.last()
-
+                Log.d("FileExplorer", "Selected FileName: $fileName")
                 val epubBook = inputStream.use { epubParser(inputStream = it)}
 
                 epubImporter(

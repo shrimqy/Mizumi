@@ -38,6 +38,9 @@
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
+
+
+
     <application
         android:name=".MizumiApplication"
         android:allowBackup="true"
@@ -60,6 +63,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".epub.EpubImportService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false"
+            />
     </application>
 
 </manifest>

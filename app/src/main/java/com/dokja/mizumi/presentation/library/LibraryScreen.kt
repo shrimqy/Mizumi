@@ -3,8 +3,11 @@ package com.dokja.mizumi.presentation.library
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Clear
@@ -22,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.dokja.mizumi.data.BookWithContext
 import com.dokja.mizumi.presentation.common.material.SearchBar
 import com.dokja.mizumi.presentation.common.screens.EmptyScreen
 
@@ -30,6 +34,7 @@ fun LibraryScreen(
 ) {
     val viewModel: LibraryViewModel = hiltViewModel()
     val state = viewModel.allItems.observeAsState(listOf()).value
+    val list: List<BookWithContext>
 
     Column(
         modifier = Modifier
@@ -94,8 +99,19 @@ fun LibraryScreen(
                 )
 
                 if (state.isEmpty()) {
-
                     EmptyScreen(message = "Your library is empty")
+                }
+
+                else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(160.dp),
+                        contentPadding = PaddingValues(top = 4.dp, bottom = 400.dp, start = 4.dp, end = 4.dp)
+                    ){
+                        items(state.size) {i ->
+                            val item = state[i]
+                            Text(text = item.title)
+                        }
+                    }
                 }
 
 
