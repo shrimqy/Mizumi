@@ -15,7 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -69,7 +69,7 @@ data class NavigationItem @OptIn(ExperimentalAnimationGraphicsApi::class) constr
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun NewsBottomNavigationPreview() {
-    var selectedItem by remember { mutableStateOf(0) }  // Track selection
+    var selectedItem by remember { mutableIntStateOf(0) }  // Track selection
     val libraryAnimatedIcon = AnimatedImageVector.animatedVectorResource(R.drawable.anim_library_enter)
     val moreAnimatedIcon = AnimatedImageVector.animatedVectorResource(R.drawable.anim_more_enter)
     val browseAnimatedIcon = AnimatedImageVector.animatedVectorResource(R.drawable.anim_browse_enter)

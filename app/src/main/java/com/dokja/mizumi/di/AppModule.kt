@@ -17,6 +17,7 @@ import com.dokja.mizumi.repository.AppRepository
 import com.dokja.mizumi.repository.BookChaptersRepository
 import com.dokja.mizumi.repository.ChapterBodyRepository
 import com.dokja.mizumi.repository.LibraryBookRepository
+import com.dokja.mizumi.utils.NotificationsCenter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -140,5 +141,13 @@ object AppModule {
             bookChaptersRepository = bookChaptersRepository,
             operations = database
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotificationCenter(
+        @ApplicationContext context: Context,
+    ): NotificationsCenter {
+        return NotificationsCenter(context)
     }
 }
