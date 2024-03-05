@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Clear
@@ -17,6 +15,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -28,14 +27,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.dokja.mizumi.data.BookWithContext
 import com.dokja.mizumi.presentation.common.material.SearchBar
 import com.dokja.mizumi.presentation.common.screens.EmptyScreen
+import com.dokja.mizumi.presentation.library.components.LibraryComfortableGrid
 
 @Composable
-fun LibraryScreen(
-) {
+fun LibraryScreen() {
     val viewModel: LibraryViewModel = hiltViewModel()
     val state = viewModel.allItems.observeAsState(listOf()).value
-    val list: List<BookWithContext>
-
+    val list: List<BookWithContext> by remember {
+        derivedStateOf {
+            viewModel.itemList
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,7 +48,6 @@ fun LibraryScreen(
             Column(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(bottom = 50.dp)
             ) {
                 var text by remember { mutableStateOf("") }
                 var active by remember { mutableStateOf(false) }
@@ -103,18 +104,27 @@ fun LibraryScreen(
                 }
 
                 else {
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(160.dp),
-                        contentPadding = PaddingValues(top = 4.dp, bottom = 400.dp, start = 4.dp, end = 4.dp)
-                    ){
-                        items(state.size) {i ->
-                            val item = state[i]
-                            Text(text = item.title)
-                        }
+                    Box(modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 10.dp)){
+                        LibraryComfortableGrid(
+                            list = list,
+                            contentPadding = PaddingValues(),
+                            onClick = {},
+                            onLongClick = {}
+                        )
                     }
+
+//                    LazyVerticalGrid(
+//                        columns = GridCells.Adaptive(160.dp),
+//                        contentPadding = PaddingValues(top = 4.dp, bottom = 400.dp, start = 4.dp, end = 4.dp)
+//                    ){
+//                        items(state.size) {i ->
+//                            val item = state[i]
+//                            Text(text = item.title)
+//                        }
+//                    }
                 }
-
-
             }
         }
     }

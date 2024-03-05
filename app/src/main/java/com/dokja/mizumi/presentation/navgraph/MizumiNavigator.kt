@@ -6,8 +6,6 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -176,10 +174,10 @@ fun MizumiNavigator() {
             navController = navController,
             startDestination = Route.Library.route,
             modifier = Modifier.padding(it),
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = { ExitTransition.None },
+            enterTransition = { fadeIn(animationSpec = tween(FADEIN_ANIM_DURATION)) },
+            exitTransition = { fadeOut(animationSpec = tween(FADEIN_ANIM_DURATION)) },
+            popEnterTransition = { fadeIn(animationSpec = tween(FADEIN_ANIM_DURATION)) },
+            popExitTransition = { fadeOut(animationSpec = tween(FADEIN_ANIM_DURATION)) },
         ) {
             composable(
                 route = Route.Library.route,

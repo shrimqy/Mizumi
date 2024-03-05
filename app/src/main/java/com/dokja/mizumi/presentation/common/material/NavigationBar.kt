@@ -32,7 +32,8 @@ fun NavBar(
     onItemClick: (Int) -> Unit
 ) {
     NavigationBar(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.contentColorFor(NavigationBarDefaults.containerColor),
         windowInsets = NavigationBarDefaults.windowInsets,
