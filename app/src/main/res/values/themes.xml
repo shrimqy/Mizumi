@@ -2,4 +2,6 @@
 <resources>
 
     <style name="Theme.Mizumi" parent="android:Theme.Material.Light.NoActionBar" />
+
+
 </resources>

@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dokja.mizumi.presentation.theme.MizumiTheme
 
+
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
@@ -57,12 +58,16 @@ fun SearchBar(
 
     val focusManager = LocalFocusManager.current
 
+    val focusRequester = remember { FocusRequester() }
+
     val isFocused = interactionSource.collectIsFocusedAsState().value
     val shouldClearFocus = !active && isFocused
 
     LaunchedEffect(active) {
         if (shouldClearFocus) {
             focusManager.clearFocus()
+        } else if (active) {
+            focusRequester.requestFocus()
         }
     }
 
@@ -76,7 +81,6 @@ fun SearchBar(
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val focusRequester = remember { FocusRequester() }
             TextField(
                 modifier = Modifier
                     .fillMaxWidth(0.96f)

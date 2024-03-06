@@ -19,7 +19,7 @@ fun LibraryComfortableGrid(
     onLongClick: (BookWithContext) -> Unit
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(128.dp),
+        columns = GridCells.Adaptive(105.dp),
         contentPadding = contentPadding
     ) {
         items(
