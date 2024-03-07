@@ -13,7 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import com.dokja.mizumi.presentation.navgraph.NavGraph
+import com.dokja.mizumi.presentation.navgraph.graphs.RootNavGraph
 import com.dokja.mizumi.presentation.theme.MizumiTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                 ) {
                     val startDestination = viewModel.startDestination
-                    NavGraph(startDestination = startDestination)
+                    RootNavGraph(startDestination = startDestination)
                 }
             }
         }

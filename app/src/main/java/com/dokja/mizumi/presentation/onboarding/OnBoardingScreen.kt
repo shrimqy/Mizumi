@@ -2,10 +2,8 @@ package com.dokja.mizumi.presentation.onboarding
 
 
 import android.Manifest
-import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,7 +32,6 @@ import com.dokja.mizumi.presentation.common.material.PageIndicator
 import com.dokja.mizumi.presentation.onboarding.components.OnBoardingPage
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnBoardingScreen(

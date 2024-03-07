@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dokja.mizumi.domain.usecases.AppEntryUseCases
-import com.dokja.mizumi.presentation.navgraph.Route
+import com.dokja.mizumi.presentation.navgraph.Graph
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -21,15 +21,15 @@ class MainViewModel @Inject constructor(
     var splashCondition by mutableStateOf(true)
         private set
 
-    var startDestination by mutableStateOf(Route.AppStartNavigation.route)
+    var startDestination by mutableStateOf(Graph.MainScreenGraph)
         private set
 
     init {
         appEntryUseCases.readAppEntry().onEach { shouldStartFromHomeScreen ->
             if(shouldStartFromHomeScreen){
-                startDestination = Route.BookNavigation.route
+                startDestination = Graph.MainScreenGraph
             } else{
-                startDestination = Route.AppStartNavigation.route
+                startDestination = Graph.OnboardingGraph
             }
             delay(200)
             splashCondition = false

@@ -8,15 +8,17 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.dokja.mizumi.data.BookWithContext
 import com.dokja.mizumi.repository.rememberResolvedBookImagePath
 
 @Composable
 fun LibraryComfortableGrid(
+    navController: NavController,
     list: List<BookWithContext>,
     contentPadding: PaddingValues,
     onClick: (BookWithContext) -> Unit,
-    onLongClick: (BookWithContext) -> Unit
+    onLongClick: (BookWithContext) -> Unit,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(105.dp),
@@ -32,7 +34,13 @@ fun LibraryComfortableGrid(
                     bookUrl = it.book.url,
                     imagePath = it.book.coverImageUrl),
                 title = it.book.title,
-                onClick = { /*TODO*/ },
+                onClick = {
+//                    navController.navigate(
+//                        Route.BookScreen.withBookId(
+//                            it.book.url
+//                        )
+//                    )
+                },
                 onLongClick = { /*TODO*/ })
         }
     }
