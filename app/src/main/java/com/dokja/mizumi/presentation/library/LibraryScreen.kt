@@ -18,11 +18,12 @@ import androidx.navigation.NavController
 import com.dokja.mizumi.data.BookWithContext
 import com.dokja.mizumi.presentation.common.screens.EmptyScreen
 import com.dokja.mizumi.presentation.library.components.LibraryComfortableGrid
+import com.dokja.mizumi.presentation.navgraph.Graph
 
 
 @Composable
 fun LibraryScreen(
-    navController: NavController
+    rootNavController: NavController
 ) {
     val viewModel: LibraryViewModel = hiltViewModel()
     val state = viewModel.allItems.observeAsState(listOf()).value
@@ -44,13 +45,14 @@ fun LibraryScreen(
                         EmptyScreen(message = "Your library is empty")
                 } else {
                         LibraryComfortableGrid(
-                            navController = navController,
+                            rootNavController = rootNavController,
                             list = list,
                             contentPadding = PaddingValues(top = 4.dp, bottom = 50.dp, start = 4.dp, end = 4.dp),
-                            onClick = {},
+                            onClick = { book ->
+                                rootNavController.navigate("${Graph.LibraryScreenGraph}/book/${book.book.url}")
+                            },
                             onLongClick = {}
                         )
-
                 }
 
         }

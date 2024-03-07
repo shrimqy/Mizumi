@@ -14,7 +14,7 @@ import com.dokja.mizumi.repository.rememberResolvedBookImagePath
 
 @Composable
 fun LibraryComfortableGrid(
-    navController: NavController,
+    rootNavController: NavController,
     list: List<BookWithContext>,
     contentPadding: PaddingValues,
     onClick: (BookWithContext) -> Unit,
@@ -35,11 +35,7 @@ fun LibraryComfortableGrid(
                     imagePath = it.book.coverImageUrl),
                 title = it.book.title,
                 onClick = {
-//                    navController.navigate(
-//                        Route.BookScreen.withBookId(
-//                            it.book.url
-//                        )
-//                    )
+                    rootNavController.navigate(route = "book/${it.book.libraryid}")
                 },
                 onLongClick = { /*TODO*/ })
         }

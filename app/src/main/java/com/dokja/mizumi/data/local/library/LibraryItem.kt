@@ -6,7 +6,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "book_library")
 data class LibraryItem(
     val title: String,
-    @PrimaryKey val url: String,
+    @PrimaryKey(autoGenerate = true)
+    var libraryid: Int = 0,
+    val url: String,
     val inLibrary: Boolean = false,
     val coverImageUrl: String = "",
     val description: String = "",

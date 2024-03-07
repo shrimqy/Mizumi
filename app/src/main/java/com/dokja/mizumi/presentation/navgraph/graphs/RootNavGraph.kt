@@ -20,6 +20,7 @@ fun RootNavGraph(startDestination: String) {
         composable(route = Graph.MainScreenGraph) {
             MainScreen(rootNavController = rootNavController)
         }
-
+        libraryNavGraph(rootNavController)
+        browseNavGraph(rootNavController)
     }
 }

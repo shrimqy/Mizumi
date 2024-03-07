@@ -28,7 +28,7 @@ sealed class MainRouteScreen(var route: String) {
 }
 
 sealed class LibraryRouteScreen(var route: String) {
-    data object BookDetail: LibraryRouteScreen("bookDetail")
+    data object BookDetailScreen: LibraryRouteScreen("book")
 }
 
 sealed class SettingsRouteScreen(var route: String) {
