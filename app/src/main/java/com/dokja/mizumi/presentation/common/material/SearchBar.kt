@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.text.KeyboardActions
@@ -16,7 +15,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -60,46 +58,39 @@ fun SearchBar(
     }
 
     Surface{
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth(0.96f)
-                    .focusRequester(focusRequester)
-                    .onFocusChanged { if (it.isFocused) onActiveChange(true) },
-                value = query,
-                onValueChange = onQueryChange,
-                placeholder = placeholder,
-                leadingIcon = leadingIcon?.let { leading -> {
-                    Box(Modifier.offset(x = 4.dp)) { leading() }
-                } },
-                trailingIcon = trailingIcon?.let { trailing -> {
-                    Box(Modifier.offset(x = (-4).dp)) { trailing() }
-                } },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        onSearch()
-                    }
-                ),
-                textStyle = MaterialTheme.typography.bodySmall,
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                shape = MaterialTheme.shapes.extraLarge,
-                interactionSource = interactionSource,
-
-            )
-        }
+        TextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequester)
+            .onFocusChanged { if (it.isFocused) onActiveChange(true) },
+        value = query,
+        onValueChange = onQueryChange,
+        placeholder = placeholder,
+        leadingIcon = leadingIcon?.let { leading -> {
+            Box(Modifier.offset(x = 4.dp)) { leading() }
+        } },
+        trailingIcon = trailingIcon?.let { trailing -> {
+            Box(Modifier.offset(x = (-4).dp)) { trailing() }
+        } },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                onSearch()
+            }
+        ),
+        textStyle = MaterialTheme.typography.bodySmall,
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+        ),
+        shape = MaterialTheme.shapes.extraLarge,
+        interactionSource = interactionSource,
+    )
     }
 }
 

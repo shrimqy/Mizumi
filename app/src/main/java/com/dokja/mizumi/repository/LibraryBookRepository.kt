@@ -23,6 +23,9 @@ class LibraryBookRepository(
     }
 
     fun getFlow(url: String) = libraryDao.getFlow(url)
+
+    fun getLibraryFlow(libraryId: Int) = libraryDao.getLibraryFlow(libraryId)
+
     suspend fun insert(book: LibraryItem) = if (isValid(book)) libraryDao.insert(book) else Unit
     suspend fun insert(books: List<LibraryItem>) = libraryDao.insert(books.filter(::isValid))
     suspend fun insertReplace(books: List<LibraryItem>) =

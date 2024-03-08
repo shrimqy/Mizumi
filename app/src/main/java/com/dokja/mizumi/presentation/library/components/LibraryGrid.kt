@@ -35,7 +35,7 @@ fun LibraryComfortableGrid(
                     imagePath = it.book.coverImageUrl),
                 title = it.book.title,
                 onClick = {
-                    rootNavController.navigate(route = "book/${it.book.libraryid}")
+                    rootNavController.navigate("book?bookUrl=${it.book.url}&bookTitle=${it.book.title}&libraryId=${it.book.libraryid}")
                 },
                 onLongClick = { /*TODO*/ })
         }

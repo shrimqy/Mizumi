@@ -16,11 +16,23 @@ fun NavGraphBuilder.libraryNavGraph(rootNavController: NavHostController) {
         startDestination = LibraryRouteScreen.BookDetailScreen.route
     ) {
         composable(
-            route = "book/{bookUrl}",
-            arguments = listOf(navArgument("bookUrl") { type = NavType.StringType })
+            route = "book?bookUrl={rawBookUrl}&bookTitle={bookTitle}&libraryId={libraryId}",
+            arguments = listOf(
+                navArgument("rawBookUrl") {
+                    type = NavType.StringType
+                },
+                navArgument("bookTitle") {
+                    type = NavType.StringType
+                },
+                navArgument("libraryId") {
+                    type = NavType.StringType
+                }
+            )
         ) { backStackEntry ->
-            val bookUrl = backStackEntry.arguments?.getString("bookUrl") ?: ""
-            BookScreen(bookUrl = bookUrl)
+            val libraryId = backStackEntry.arguments?.getString("libraryId") ?: ""
+            val bookTitle = backStackEntry.arguments?.getString("bookTitle") ?: ""
+            val rawBookUrl = backStackEntry.arguments?.getString("rawBookUrl") ?: ""
+            BookScreen(libraryId = libraryId, rawBookUrl = rawBookUrl, bookTitle = bookTitle, rootNavController = rootNavController)
         }
     }
 }

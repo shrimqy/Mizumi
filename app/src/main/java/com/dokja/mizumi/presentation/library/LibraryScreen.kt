@@ -18,7 +18,6 @@ import androidx.navigation.NavController
 import com.dokja.mizumi.data.BookWithContext
 import com.dokja.mizumi.presentation.common.screens.EmptyScreen
 import com.dokja.mizumi.presentation.library.components.LibraryComfortableGrid
-import com.dokja.mizumi.presentation.navgraph.Graph
 
 
 @Composable
@@ -49,7 +48,7 @@ fun LibraryScreen(
                             list = list,
                             contentPadding = PaddingValues(top = 4.dp, bottom = 50.dp, start = 4.dp, end = 4.dp),
                             onClick = { book ->
-                                rootNavController.navigate("${Graph.LibraryScreenGraph}/book/${book.book.url}")
+                                rootNavController.navigate(route = "book/${book .book.libraryid}")
                             },
                             onLongClick = {}
                         )

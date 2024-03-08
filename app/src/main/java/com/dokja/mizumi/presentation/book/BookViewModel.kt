@@ -36,6 +36,10 @@ class BookViewModel @Inject constructor(
     override val rawBookUrl by StateExtraString(stateHandle)
     override val bookTitle by StateExtraString(stateHandle)
 
+    private val libraryId: String = checkNotNull(stateHandle["libraryId"])
+
+//    val libraryBook = appRepository.libraryBooks.getLibraryFlow(libraryId.toInt())
+
     val bookUrl = appFileResolver.getLocalIfContentType(rawBookUrl, bookFolderName = bookTitle)
 
     @Volatile
@@ -43,7 +47,7 @@ class BookViewModel @Inject constructor(
 
     @Volatile
     private var lastSelectedChapterUrl: String? = null
-    private val book = appRepository.libraryBooks.getFlow(bookUrl)
+    private val book = appRepository.libraryBooks.getLibraryFlow(libraryId.toInt())
         .filterNotNull()
         .map(BookScreenState::BookState)
         .toState(

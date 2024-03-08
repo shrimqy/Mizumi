@@ -8,7 +8,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.dokja.mizumi.data.BookWithContext
-import com.dokja.mizumi.data.local.library.LibraryItem
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -56,6 +55,9 @@ interface LibraryDao {
 
     @Query("SELECT * FROM book_library WHERE url = :url")
     fun getFlow(url: String): Flow<LibraryItem?>
+
+    @Query("SELECT * FROM book_library WHERE libraryid = :libraryId")
+    fun getLibraryFlow(libraryId: Int): Flow<LibraryItem?>
 
     @Query("SELECT EXISTS(SELECT * FROM book_library WHERE url == :url AND inLibrary == 1)")
     suspend fun existInLibrary(url: String): Boolean
