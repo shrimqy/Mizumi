@@ -1,4 +1,4 @@
-package com.dokja.mizumi.presentation.library.components
+package com.dokja.mizumi.presentation.common
 
 import android.content.res.Resources
 import androidx.annotation.DrawableRes

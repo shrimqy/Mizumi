@@ -21,6 +21,9 @@ class BookChaptersRepository(
     suspend fun setAsRead(chapterUrl: String, read: Boolean) =
         chapterDao.setAsRead(chapterUrl, read)
 
+    suspend fun updateBookmark(chapterUrl: String, bookmark: Boolean) =
+        chapterDao.updateBookmark(chapterUrl, bookmark)
+
     suspend fun get(url: String) = chapterDao.get(url)
     suspend fun hasChapters(bookUrl: String) = chapterDao.hasChapters(bookUrl)
     suspend fun getAll() = chapterDao.getAll()
@@ -29,6 +32,7 @@ class BookChaptersRepository(
 
     suspend fun setAsRead(chaptersUrl: List<String>) =
         chaptersUrl.chunked(500).forEach { chapterDao.setAsRead(it) }
+
 
     suspend fun setAsUnread(chaptersUrl: List<String>) =
         chaptersUrl.chunked(500).forEach { chapterDao.setAsUnread(it) }

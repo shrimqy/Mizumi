@@ -47,7 +47,7 @@ class AppRepository @Inject constructor(
             ?: return@tryAsResponse
         val epub = inputStream.use { epubParser(inputStream = inputStream) }
         epubImporter(
-            storageFolderName = bookTitle,
+            storageFolderName =  bookTitle,
             appFileResolver = appFileResolver,
             appRepository = this,
             epub = epub,

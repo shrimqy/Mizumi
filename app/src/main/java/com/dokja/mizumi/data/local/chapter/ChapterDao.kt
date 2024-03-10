@@ -44,6 +44,11 @@ interface ChapterDao {
     @Query("UPDATE Chapter SET read = :read WHERE url = :chapterUrl")
     suspend fun setAsRead(chapterUrl: String, read: Boolean)
 
+
+    @Query("UPDATE Chapter SET bookmark = :bookmark WHERE url = :chapterUrl")
+    suspend fun updateBookmark(chapterUrl: String, bookmark: Boolean)
+
+
     @Query(
         """
         UPDATE Chapter 

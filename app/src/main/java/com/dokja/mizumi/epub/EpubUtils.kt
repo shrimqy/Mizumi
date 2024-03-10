@@ -23,7 +23,7 @@ val String.decodedURL: String get() = URLDecoder.decode(this, "UTF-8")
 fun String.asFileName(): String = this.replace("/", "_")
 fun ZipInputStream.entries() = generateSequence { nextEntry }
 
-fun Document.selectFirstTag(tag: String): Node? = getElementsByTagName(tag).item(0)
+fun Document.selectFirstTag(tag: String): Node? = getElementsByTagName(tag)?.item(0)
 fun Node.selectFirstChildTag(tag: String) = childElements.find { it.tagName == tag }
 fun Node.selectChildTag(tag: String) = childElements.filter { it.tagName == tag }
 fun Node.getAttributeValue(attribute: String): String? =
@@ -31,3 +31,5 @@ fun Node.getAttributeValue(attribute: String): String? =
 
 val NodeList.elements get() = (0..length).asSequence().mapNotNull { item(it) as? Element }
 val Node.childElements get() = childNodes.elements
+
+

@@ -24,7 +24,11 @@ fun MainNavGraph(
         navController = homeNavController,
         route = Graph.MainScreenGraph,
         startDestination = MainRouteScreen.Library.route,
-        modifier = Modifier.padding(innerPadding)
+        modifier = Modifier.padding(innerPadding),
+        enterTransition = { enterTransition() },
+        exitTransition = { exitTransition() },
+        popEnterTransition = { popEnterTransition() },
+        popExitTransition = { popExitTransition() }
     ) {
         composable(route = MainRouteScreen.Library.route) {
             LibraryScreen(rootNavController)

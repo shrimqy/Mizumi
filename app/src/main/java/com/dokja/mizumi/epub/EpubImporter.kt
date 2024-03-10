@@ -1,3 +1,4 @@
+import android.util.Log
 import com.dokja.mizumi.data.local.chapter.Chapter
 import com.dokja.mizumi.data.local.chapter.ChapterBody
 import com.dokja.mizumi.data.local.library.LibraryItem
@@ -19,6 +20,8 @@ suspend fun epubImporter(
 ): Unit = withContext(Dispatchers.IO) {
     val localBookUrl = appFileResolver.getLocalBookPath(storageFolderName)
 
+    Log.d("InsideImporter", "Selected FileName: $storageFolderName")
+
     // First clean any previous entries from the book
     appRepository.bookChapters.chapters(localBookUrl)
         .map { it.url }
@@ -36,9 +39,11 @@ suspend fun epubImporter(
     // Insert new book data
     LibraryItem(
         title = storageFolderName,
+        description = epub.description,
         url = localBookUrl,
         coverImageUrl = appFileResolver.getLocalBookCoverPath(),
-        inLibrary = addToLibrary
+        inLibrary = addToLibrary,
+        author = epub.author,
     ).let { appRepository.libraryBooks.insert(it) }
 
     epub.chapters.mapIndexed { i, chapter ->

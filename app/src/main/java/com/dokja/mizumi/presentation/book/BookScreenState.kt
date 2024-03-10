@@ -29,7 +29,7 @@ data class BookScreenState(
         val lastReadChapter: String? = null,
         val inLibrary: Boolean = false,
         val coverImageUrl: String? = null,
-        val description: String = "",
+        val description: String? = "",
     ) {
         constructor(book: LibraryItem) : this(
             title = book.title,

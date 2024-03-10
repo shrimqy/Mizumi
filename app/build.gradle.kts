@@ -29,6 +29,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -73,6 +74,8 @@ dependencies {
     implementation("androidx.compose.animation:animation:1.6.2")
     implementation("androidx.compose.material:material-icons-extended")
 
+    //swipeable
+    implementation("me.saket.swipe:swipe:1.3.0")
 
     // Accompanist compose.
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")

@@ -26,7 +26,7 @@ interface AppDatabaseOperations {
         LibraryItem::class,
         Chapter::class,
         ChapterBody::class],
-    version = 5,
+    version = 6,
     exportSchema = false
 ) abstract class MizumiDatabase : RoomDatabase(), AppDatabaseOperations {
     abstract fun getLibraryDao(): LibraryDao

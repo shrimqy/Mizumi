@@ -51,6 +51,7 @@ class EpubImportService : Service() {
 
     companion object {
         fun start(ctx: Context, uri: Uri) {
+
             if (!isRunning(ctx))
                 ContextCompat.startForegroundService(ctx, IntentData(ctx, uri))
         }
@@ -125,7 +126,7 @@ class EpubImportService : Service() {
 
                 Log.d("FileExplorer", "Selected FileName: $fileName")
                 val epubBook = inputStream.use { epubParser(inputStream = it) }
-
+                Log.d("FileExplorer", "Selected FileName: $fileName")
                 epubImporter(
                     storageFolderName = fileName,
                     appFileResolver = appFileResolver,

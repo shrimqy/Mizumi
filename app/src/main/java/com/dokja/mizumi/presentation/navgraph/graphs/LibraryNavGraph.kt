@@ -27,7 +27,11 @@ fun NavGraphBuilder.libraryNavGraph(rootNavController: NavHostController) {
                 navArgument("libraryId") {
                     type = NavType.StringType
                 }
-            )
+            ),
+            enterTransition = { enterTransition() },
+            exitTransition = { exitTransition() },
+            popEnterTransition = { popEnterTransition() },
+            popExitTransition = { popExitTransition() }
         ) { backStackEntry ->
             val libraryId = backStackEntry.arguments?.getString("libraryId") ?: ""
             val bookTitle = backStackEntry.arguments?.getString("bookTitle") ?: ""
