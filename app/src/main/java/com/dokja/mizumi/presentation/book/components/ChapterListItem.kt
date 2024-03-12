@@ -76,7 +76,7 @@ fun ChapterListItem(
                 }
                 Text(
                     text = chapter.title!!,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     color = LocalContentColor.current.copy(alpha = textAlpha),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -85,7 +85,7 @@ fun ChapterListItem(
             }
             Row {
                 ProvideTextStyle(
-                    value = MaterialTheme.typography.bodyMedium.copy(
+                    value = MaterialTheme.typography.bodySmall.copy(
                         fontSize = 12.sp,
                         color = LocalContentColor.current.copy(alpha = textSubtitleAlpha),
                     ),

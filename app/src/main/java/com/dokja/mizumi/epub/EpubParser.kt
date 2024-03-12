@@ -1,6 +1,5 @@
 package com.dokja.mizumi.epub
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
@@ -57,9 +56,7 @@ data class ToCEntry(
     val chapterTitle: String,
     val chapterLink: String)
 
-data class TempEpubChapter(
-    val url: String, val title: String?, var body: String
-)
+
 
 data class EpubFile(val absPath: String, val data: ByteArray) {
     override fun equals(other: Any?): Boolean {
@@ -128,6 +125,7 @@ suspend fun epubParser(
 
     val metadataTitle = metadata.selectFirstChildTag("dc:title")?.textContent
         ?: "Unknown Title"
+    Log.d("Parser", "coverImage: $metadataTitle")
     val metadataCreator = metadata.selectFirstChildTag("dc:creator")?.textContent
 
     val metadataDesc = metadata.selectFirstChildTag("dc:description")?.textContent
@@ -299,12 +297,6 @@ suspend fun epubParser(
     val images = (listedImages + unlistedImages).distinctBy { it.absPath }
 
 
-
-    val coverImageBm: Bitmap? = if (coverImage?.image != null) {
-        BitmapFactory.decodeByteArray(coverImage.image, 0, coverImage.image.size)
-    } else {
-        null
-    }
     return@withContext EpubBook(
         fileName = metadataTitle.asFileName(),
         title = metadataTitle,
@@ -323,7 +315,7 @@ class EpubXMLFileParser(
 ) {
     data class Output(val body: String, val title: String?)
 
-    val fileParentFolder: File = File(fileAbsolutePath).parentFile ?: File("")
+    private val fileParentFolder: File = File(fileAbsolutePath).parentFile ?: File("")
 
     fun parseAsDocument(): Output {
         val body = Jsoup.parse(data.inputStream(), "UTF-8", "").body()
@@ -336,7 +328,7 @@ class EpubXMLFileParser(
     }
 
 
-    fun parseAsImage(absolutePathImage: String): String {
+    private fun parseAsImage(absolutePathImage: String): String {
         // Use run catching so it can be run locally without crash
         val bitmap = zipFile[absolutePathImage]?.data?.runCatching {
             BitmapFactory.decodeByteArray(this, 0, this.size)
@@ -422,59 +414,59 @@ class EpubXMLFileParser(
 }
 
 
-@Throws(Exception::class)
-suspend fun epubCoverParser(
-    inputStream: InputStream
-): EpubImage? = withContext(Dispatchers.Default) {
-    val files = getZipFiles(inputStream)
-
-    val container = files["META-INF/container.xml"]
-        ?: throw Exception("META-INF/container.xml file missing")
-
-    val opfFilePath = parseXMLFile(container.data)
-        ?.selectFirstTag("rootfile")
-        ?.getAttributeValue("full-path")
-        ?.decodedURL ?: throw Exception("Invalid container.xml file")
-
-    val opfFile = files[opfFilePath] ?: throw Exception(".opf file missing")
-
-    val document = parseXMLFile(opfFile.data)
-        ?: throw Exception(".opf file failed to parse data")
-    val metadata = document.selectFirstTag("metadata")
-        ?: throw Exception(".opf file metadata section missing")
-    val manifest = document.selectFirstTag("manifest")
-        ?: throw Exception(".opf file manifest section missing")
-
-
-    val metadataCoverId = metadata
-        .selectChildTag("meta")
-        .find { it.getAttributeValue("name") == "cover" }
-        ?.getAttributeValue("content")
-
-    val hrefRootPath = File(opfFilePath).parentFile ?: File("")
-    fun String.hrefAbsolutePath() = File(hrefRootPath, this).canonicalFile
-        .toPath()
-        .invariantSeparatorsPathString
-        .removePrefix("/")
-
-    data class EpubManifestItem(
-        val id: String,
-        val absoluteFilePath: String,
-        val mediaType: String,
-        val properties: String
-    )
-
-    val manifestItems = manifest
-        .selectChildTag("item").map {
-            EpubManifestItem(
-                id = it.getAttribute("id"),
-                absoluteFilePath = it.getAttribute("href").decodedURL.hrefAbsolutePath(),
-                mediaType = it.getAttribute("media-type"),
-                properties = it.getAttribute("properties")
-            )
-        }.associateBy { it.id }
-
-    manifestItems[metadataCoverId]
-        ?.let { files[it.absoluteFilePath] }
-        ?.let { EpubImage(absPath = it.absPath, image = it.data) }
-}
+//@Throws(Exception::class)
+//suspend fun epubCoverParser(
+//    inputStream: InputStream
+//): EpubImage? = withContext(Dispatchers.Default) {
+//    val files = getZipFiles(inputStream)
+//
+//    val container = files["META-INF/container.xml"]
+//        ?: throw Exception("META-INF/container.xml file missing")
+//
+//    val opfFilePath = parseXMLFile(container.data)
+//        ?.selectFirstTag("rootfile")
+//        ?.getAttributeValue("full-path")
+//        ?.decodedURL ?: throw Exception("Invalid container.xml file")
+//
+//    val opfFile = files[opfFilePath] ?: throw Exception(".opf file missing")
+//
+//    val document = parseXMLFile(opfFile.data)
+//        ?: throw Exception(".opf file failed to parse data")
+//    val metadata = document.selectFirstTag("metadata")
+//        ?: throw Exception(".opf file metadata section missing")
+//    val manifest = document.selectFirstTag("manifest")
+//        ?: throw Exception(".opf file manifest section missing")
+//
+//
+//    val metadataCoverId = metadata
+//        .selectChildTag("meta")
+//        .find { it.getAttributeValue("name") == "cover" }
+//        ?.getAttributeValue("content")
+//
+//    val hrefRootPath = File(opfFilePath).parentFile ?: File("")
+//    fun String.hrefAbsolutePath() = File(hrefRootPath, this).canonicalFile
+//        .toPath()
+//        .invariantSeparatorsPathString
+//        .removePrefix("/")
+//
+//    data class EpubManifestItem(
+//        val id: String,
+//        val absoluteFilePath: String,
+//        val mediaType: String,
+//        val properties: String
+//    )
+//
+//    val manifestItems = manifest
+//        .selectChildTag("item").map {
+//            EpubManifestItem(
+//                id = it.getAttribute("id"),
+//                absoluteFilePath = it.getAttribute("href").decodedURL.hrefAbsolutePath(),
+//                mediaType = it.getAttribute("media-type"),
+//                properties = it.getAttribute("properties")
+//            )
+//        }.associateBy { it.id }
+//
+//    manifestItems[metadataCoverId]
+//        ?.let { files[it.absoluteFilePath] }
+//        ?.let { EpubImage(absPath = it.absPath, image = it.data) }
+//}

@@ -38,7 +38,7 @@ suspend fun epubImporter(
 
     // Insert new book data
     LibraryItem(
-        title = storageFolderName,
+        title = epub.title,
         description = epub.description,
         url = localBookUrl,
         coverImageUrl = appFileResolver.getLocalBookCoverPath(),

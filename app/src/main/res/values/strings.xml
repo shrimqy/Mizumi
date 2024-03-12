@@ -3,4 +3,22 @@
     <string name="notification_channel_name_import_epub">Import EPUB</string>
     <string name="import_epub">Import EPUB</string>
     <string name="failed_get_file">Failed to get the file</string>
+    <string name="book_info_expand">More</string>
+    <string name="book_info_collapse">Less</string>
+    <string name="description_placeholder">No description</string>
+    <string name="display_mode_chapter">Chapter %1$s</string>
+    <string name="add_to_library">Add to Library</string>
+    <string name="in_library">In Library</string>
+    <string name="remove_from_library">Remove from library</string>
+    <string name="chapter_error">Error</string>
+    <string name="chapter_paused">Paused</string>
+    <string name="show_title">Source title</string>
+    <string name="show_chapter_number">Chapter number</string>
+    <string name="sort_by_source">By source</string>
+    <string name="sort_by_number">By chapter number</string>
+    <string name="sort_by_upload_date">By upload date</string>
+    <string name="copied_to_clipboard_plain">Copied to clipboard</string>
+    <string name="copied_to_clipboard">Copied to clipboard:\n%1$s</string>
+    <string name="tracking_tab">Tracking</string>
+    <string name="add_tracking">Add tracking</string>
 </resources>

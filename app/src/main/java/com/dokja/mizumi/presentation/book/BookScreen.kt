@@ -1,10 +1,12 @@
 package com.dokja.mizumi.presentation.book
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -40,6 +42,7 @@ import com.dokja.mizumi.presentation.book.components.BookActionRow
 import com.dokja.mizumi.presentation.book.components.BookInfoHeader
 import com.dokja.mizumi.presentation.book.components.ChapterHeader
 import com.dokja.mizumi.presentation.book.components.ChapterListItem
+import com.dokja.mizumi.presentation.book.components.ExpandableMangaDescription
 import com.dokja.mizumi.presentation.common.VerticalFastScroller
 import com.dokja.mizumi.presentation.common.screens.EmptyScreen
 
@@ -140,19 +143,39 @@ fun BookScreen(
                     key = "actionRow",
                     contentType = { 1 }
                 ) {
-                    BookActionRow()
+                    BookActionRow(
+                        inLibrary = state.book.value.inLibrary,
+                        trackingStatus = false,
+                        onAddToLibraryClicked = { /*TODO*/ },
+                        onTrackingClicked = { /*TODO*/ },
+                        onEditIntervalClicked = { /*TODO*/ },
+                        onEditCategory = { /*TODO*/ })
+                }
+
+                item(
+                    key = "description",
+                    contentType = { 2 }
+                ) {
+                    ExpandableMangaDescription(
+                        defaultExpandState = false,
+                        description = state.book.value.description,
+                        tagsProvider = { null },
+                        onTagSearch = {  },
+                        onCopyTagToClipboard = {},
+                    )
+                    Spacer(modifier = Modifier.size(6.dp))
                 }
 
                 item(
                     key = "chapterHeader",
-                    contentType = { 2 }
+                    contentType = { 3 }
                 ) {
                     ChapterHeader(enabled = true, chapterCount = state.chapters.size, onClick = {  })
                 }
                 items(
-                    items = state.chapters,
+                    items = state.chapters.reversed(),
                     key = { "_" + it.chapter.url},
-                    contentType = { 3 }
+                    contentType = { 4 }
                 ) {
                     ChapterListItem(
                         chapterWithContext = it,
