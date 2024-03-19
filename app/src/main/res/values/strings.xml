@@ -21,4 +21,47 @@
     <string name="copied_to_clipboard">Copied to clipboard:\n%1$s</string>
     <string name="tracking_tab">Tracking</string>
     <string name="add_tracking">Add tracking</string>
+    <string name="no_next_chapter">Next chapter not found</string>
+    <string name="transition_no_next">There\&apos;s no next chapter</string>
+    <string name="transition_no_previous">There\&apos;s no previous chapter</string>
+
+    <string name="day_short">%dd</string>
+    <string name="hour_short">%dh</string>
+    <string name="minute_short">%dm</string>
+    <string name="seconds_short">%ds</string>
+
+    <string name="reader_no_more_chapters">༺  Last chapter  ༻</string>
+    <string name="reader_first_chapter">༺  First chapter  ༻</string>
+
+
+    <string name="translating_from_lang_a_to_lang_b">Translating from %1$s to %2$s</string>
+    <string name="language_source_empty_text">Source</string>
+    <string name="language_target_empty_text">Target</string>
+
+    <string name="label_more">More</string>
+
+    <string name="action_filter_unread">Unread</string>
+
+
+    <string name="action_bookmark">Bookmark chapter</string>
+    <string name="action_remove_bookmark">Unbookmark chapter</string>
+    <string name="action_delete">Delete</string>
+
+    <string name="action_select_all">Select all</string>
+    <string name="action_select_inverse">Select inverse</string>
+    <string name="action_mark_as_read">Mark as read</string>
+    <string name="action_mark_as_unread">Mark as unread</string>
+    <string name="action_mark_previous_as_read">Mark previous as read</string>
+
+    <string name="action_start">Start</string>
+    <string name="action_resume">Resume</string>
+
+    <string name="action_copy_to_clipboard">Copy to clipboard</string>
+
+    <string name="action_newest">Newest</string>
+    <string name="action_oldest">Oldest</string>
+    <string name="action_asc">Ascending</string>
+    <string name="action_desc">Descending</string>
+
+    <string name="loading">Loading…</string>
 </resources>

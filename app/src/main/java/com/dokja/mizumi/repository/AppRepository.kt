@@ -25,7 +25,7 @@ class AppRepository @Inject constructor(
     private val appFileResolver: AppFileResolver,
 ) {
 
-    suspend fun toggleBookmark(bookUrl: String, bookTitle: String): Boolean {
+    suspend fun libraryUpdate(bookUrl: String, bookTitle: String): Boolean {
         val realUrl = appFileResolver.getLocalIfContentType(bookUrl, bookFolderName = bookTitle)
         return if (bookUrl.isContentUri && libraryBooks.get(realUrl) == null) {
             importEpubFromContentUri(

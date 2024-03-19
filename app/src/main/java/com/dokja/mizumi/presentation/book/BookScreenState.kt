@@ -7,17 +7,13 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.dokja.mizumi.data.ChapterWithContext
 import com.dokja.mizumi.data.local.library.LibraryItem
+import com.dokja.mizumi.data.manager.UserPreferences
 
 data class BookScreenState(
     val book: State<BookState>,
     val error: MutableState<String>,
     val selectedChaptersUrl: SnapshotStateMap<String, Unit>,
     val chapters: SnapshotStateList<ChapterWithContext>,
-//    val isRefreshing: MutableState<Boolean>,
-//    val sourceCatalogNameStrRes: State<Int?>,
-//    val settingChapterSort: MutableState<AppPreferences.TERNARY_STATE>,
-//    val isLocalSource: State<Boolean>,
-//    val isRefreshable: State<Boolean>,
 ) {
 
     val isInSelectionMode = derivedStateOf { selectedChaptersUrl.size != 0 }

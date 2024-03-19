@@ -5,7 +5,11 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.dokja.mizumi.R
+import com.dokja.mizumi.data.manager.SortOrder
+import com.dokja.mizumi.data.manager.UserPreferences
 import com.dokja.mizumi.di.AppCoroutineScope
+import com.dokja.mizumi.domain.manager.LocalUserManager
 import com.dokja.mizumi.isContentUri
 import com.dokja.mizumi.presentation.BaseViewModel
 import com.dokja.mizumi.presentation.library.toState
@@ -14,6 +18,8 @@ import com.dokja.mizumi.repository.AppRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -31,6 +37,7 @@ class BookViewModel @Inject constructor(
     private val appRepository: AppRepository,
     private val appScope: AppCoroutineScope,
     private val appFileResolver: AppFileResolver,
+    private val localUserManager: LocalUserManager,
     stateHandle: SavedStateHandle,
 ) : BaseViewModel(), ChapterStateBundle {
     override val rawBookUrl by StateExtraString(stateHandle)
@@ -55,13 +62,24 @@ class BookViewModel @Inject constructor(
             BookScreenState.BookState(title = bookTitle, url = bookUrl, coverImageUrl = null)
         )
 
+
+
+
+    private val _userPreferences = MutableStateFlow(
+        UserPreferences(
+            showUnread = false, // Default value for showUnread
+            showBookmarked = false, // Default value for showBookmarked
+            sortOrder = SortOrder.Ascending // Default value for sortOrder
+        )
+    )
+    val userPreferences: MutableStateFlow<UserPreferences> = _userPreferences
+
     val state = BookScreenState(
         book = book,
         error = mutableStateOf(""),
         chapters = mutableStateListOf(),
         selectedChaptersUrl = mutableStateMapOf(),
     )
-
     init {
         appScope.launch {
             if (rawBookUrl.isContentUri && appRepository.libraryBooks.get(bookUrl) == null) {
@@ -71,20 +89,42 @@ class BookViewModel @Inject constructor(
 
         viewModelScope.launch {
             appRepository.bookChapters.getChaptersWithContextFlow(bookUrl)
+                // Sort the chapters given the order preference
                 .flowOn(Dispatchers.Default)
-                .collect { chapters ->
-                    val sortedChapters = chapters.sortedByDescending { it.chapter.position }
+                .combine(userPreferences) { chapters, preferences ->
+                    val filteredChapters = if (preferences.showUnread) {
+                        chapters.filter { !it.chapter.read } // Filter unread chapters
+                    } else {
+                        chapters // Return all chapters if showUnread is false
+                    }
+                    filteredChapters
+                }
+                .collect {
                     state.chapters.clear()
-                    state.chapters.addAll(sortedChapters)
+                    state.chapters.addAll(it)
                 }
         }
-    }
-    fun toggleBookmark() {
+
         viewModelScope.launch {
-            val isBookmarked = appRepository.toggleBookmark(bookTitle = bookTitle, bookUrl = bookUrl)
-//                val msg = if (isBookmarked) R.string.added_to_library else R.string.removed_from_library
+            localUserManager.preferences().collect {
+                _userPreferences.value = it
+            }
+        }
+
+    }
+    fun libraryUpdate() {
+        viewModelScope.launch {
+            val isBookmarked = appRepository.libraryUpdate(bookTitle = bookTitle, bookUrl = bookUrl)
+                val msg = if (isBookmarked) R.string.add_to_library else R.string.remove_from_library
         }
     }
+
+    fun updateShowUnread(showUnread: Boolean) {
+        viewModelScope.launch{
+            localUserManager.updateUnread(showUnread)
+        }
+    }
+
 
     private fun importUriContent() {
         if (loadChaptersJob?.isActive == true) return
@@ -110,3 +150,39 @@ class StateExtraString(private val state: SavedStateHandle) {
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) =
         state.set(property.name, value)
 }
+
+
+
+
+//fun removeCommonTextFromTitles(list: List<ChapterWithContext>): List<ChapterWithContext> {
+//    // Try removing repetitive title text from chapters
+//    if (list.size <= 1) return list
+//    val first = list.first().chapter.title
+//    val prefix =
+//        list.fold(first) { acc, e -> e.chapter.title?.commonPrefixWith(acc, ignoreCase = true) }
+//    val suffix =
+//        list.fold(first) { acc, e -> e.chapter.title?.commonSuffixWith(acc, ignoreCase = true) }
+//
+//    // Kotlin Std Lib doesn't have optional ignoreCase parameter for removeSurrounding
+//    fun String.removeSurrounding(
+//        prefix: CharSequence,
+//        suffix: CharSequence,
+//        ignoreCase: Boolean = false
+//    ): String {
+//        if ((length >= prefix.length + suffix.length) && startsWith(prefix, ignoreCase) && endsWith(
+//                suffix,
+//                ignoreCase
+//            )
+//        ) {
+//            return substring(prefix.length, length - suffix.length)
+//        }
+//        return this
+//    }
+//
+//    return list.map { data ->
+//        val newTitle = data
+//            .chapter.title.removeSurrounding(prefix, suffix, ignoreCase = true)
+//            .ifBlank { data.chapter.title }
+//        data.copy(chapter = data.chapter.copy(title = newTitle))
+//    }
+//}

@@ -24,12 +24,18 @@ class LibraryViewModel @Inject constructor(
     val allItems: LiveData<List<LibraryItem>> = libraryDao.getAllItems()
 
     val itemList by createPageList()
-    fun createPageList() = appRepository.libraryBooks
+    private fun createPageList() = appRepository.libraryBooks
         .getBooksInLibraryWithContextFlow
 //        .map { it.filter { book -> book.book.completed == isShowCompleted } }
         .toState(viewModelScope, listOf())
     fun getBook(bookUrl: String) = appRepository.libraryBooks.getFlow(bookUrl).filterNotNull()
+
+
+
+
 }
+
+
 
 fun <T> Flow<T>.toState(scope: CoroutineScope, initialValue: T): State<T> {
     val mutableState = mutableStateOf(initialValue)

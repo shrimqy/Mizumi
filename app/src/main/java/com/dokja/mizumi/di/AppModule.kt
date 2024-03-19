@@ -2,6 +2,7 @@ package com.dokja.mizumi.di
 
 import android.app.Application
 import android.content.Context
+import com.dokja.mizumi.AppPreferences
 import com.dokja.mizumi.data.local.AppDatabaseOperations
 import com.dokja.mizumi.data.local.MizumiDatabase
 import com.dokja.mizumi.data.local.chapter.ChapterBodyDao
@@ -32,8 +33,15 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
     val mainDatabaseName = "bookEntry"
+
     @Provides
     fun provideAppContext(@ApplicationContext context: Context) = context
+
+    @Provides
+    @Singleton
+    fun provideAppPreferences(@ApplicationContext context: Context): AppPreferences {
+        return AppPreferences(context)
+    }
 
     @Provides
     @Singleton
@@ -115,7 +123,7 @@ object AppModule {
         return database
     }
 
-        @Provides
+    @Provides
     @Singleton
     fun provideAppFileResolver(@ApplicationContext context: Context): AppFileResolver {
         return AppFileResolver(context = context)
@@ -135,7 +143,7 @@ object AppModule {
     fun provideChapterBodyRepository(
         database: MizumiDatabase,
         bookChaptersRepository: BookChaptersRepository,
-        ): ChapterBodyRepository {
+    ): ChapterBodyRepository {
         return ChapterBodyRepository(
             chapterBodyDao = database.getChapterBody(),
             bookChaptersRepository = bookChaptersRepository,
@@ -150,4 +158,22 @@ object AppModule {
     ): NotificationsCenter {
         return NotificationsCenter(context)
     }
+
+//    @Provides
+//    @Singleton
+//    fun provideReaderManager(
+//        appRepository: AppRepository,
+//        translationManager: TranslationManager,
+//        appPreferences: AppPreferences,
+//        appCoroutineScope: AppCoroutineScope,
+//        @ApplicationContext context: Context
+//    ): ReaderManager {
+//        return ReaderManager(
+//            appRepository,
+//            translationManager,
+//            appPreferences,
+//            context,
+//            appScope = appCoroutineScope
+//        )
+//    }
 }

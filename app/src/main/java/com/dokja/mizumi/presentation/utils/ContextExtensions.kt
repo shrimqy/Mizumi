@@ -4,6 +4,9 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
+import android.util.TypedValue
+import android.view.View
+import android.view.animation.DecelerateInterpolator
 import androidx.core.content.getSystemService
 
 /**
@@ -28,3 +31,19 @@ fun Context.copyToClipboard(label: String, content: String) {
         toast("Error")
     }
 }
+
+fun View.fadeIn(durationMillis: Long = 150) = apply {
+    alpha = 0f
+    visibility = View.VISIBLE
+    animate().also {
+        it.alpha(1f)
+        it.duration = durationMillis
+        it.interpolator = DecelerateInterpolator()
+    }
+}
+
+fun Int.dpToPx(context: Context) = TypedValue.applyDimension(
+    TypedValue.COMPLEX_UNIT_DIP,
+    this.toFloat(),
+    context.resources.displayMetrics
+).toInt()

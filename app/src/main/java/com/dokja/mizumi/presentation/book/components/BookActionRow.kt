@@ -2,6 +2,7 @@ package com.dokja.mizumi.presentation.book.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -65,7 +66,7 @@ fun BookActionRow(
 }
 
 @Composable
-private fun BookActionButton(
+private fun RowScope.BookActionButton(
     title: String,
     icon: ImageVector,
     color: Color,
@@ -74,7 +75,7 @@ private fun BookActionButton(
 ) {
     TextButton(
         onClick = onClick,
-        modifier = Modifier.padding(start = 5.dp),
+        modifier = Modifier.weight(1f),
     ) {
         Row(horizontalArrangement = Arrangement.Start) {
             Icon(

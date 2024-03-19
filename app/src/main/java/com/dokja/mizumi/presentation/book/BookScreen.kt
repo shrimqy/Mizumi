@@ -1,9 +1,13 @@
 package com.dokja.mizumi.presentation.book
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,12 +22,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -33,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,6 +51,7 @@ import com.dokja.mizumi.presentation.book.components.BookInfoHeader
 import com.dokja.mizumi.presentation.book.components.ChapterHeader
 import com.dokja.mizumi.presentation.book.components.ChapterListItem
 import com.dokja.mizumi.presentation.book.components.ExpandableMangaDescription
+import com.dokja.mizumi.presentation.book.components.TriStateItem
 import com.dokja.mizumi.presentation.common.VerticalFastScroller
 import com.dokja.mizumi.presentation.common.screens.EmptyScreen
 
@@ -61,6 +70,25 @@ fun BookScreen(
     var showBottomSheet by rememberSaveable { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
 
+    val onCloseSelectionBar = viewModel::libraryUpdate
+
+    if (state.isInSelectionMode.value) BackHandler {
+        onCloseSelectionBar()
+    }
+
+    val userPreferences by viewModel.userPreferences.collectAsState()
+    var showUnread by rememberSaveable {
+        mutableStateOf(userPreferences.showUnread)
+    }
+    viewModel.updateShowUnread(showUnread)
+
+    val sheetState = rememberModalBottomSheetState()
+    var isSheetOpen by rememberSaveable {
+        mutableStateOf(false)
+    }
+    Log.d("Mutable:", "$showUnread")
+    Log.d("user:", "${userPreferences.showUnread}")
+
     //Custom topBarTitleColor
     val topAppBarElementColor = if (scrollBehavior.state.overlappedFraction > 0) {
         MaterialTheme.colorScheme.onBackground
@@ -68,7 +96,9 @@ fun BookScreen(
         Color.Transparent
     }
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .fillMaxHeight(),
         topBar = {
                 TopAppBar(
                     scrollBehavior = scrollBehavior,
@@ -94,7 +124,7 @@ fun BookScreen(
                     },
                     actions = {
                         IconButton(
-                            onClick = { showBottomSheet = !showBottomSheet }
+                            onClick = { isSheetOpen = true }
                         ) {
                             Icon(
                                 Icons.Filled.FilterList, "Filter"
@@ -117,8 +147,19 @@ fun BookScreen(
         bottomBar = {
         }
     ) { contentPadding ->
+        if (isSheetOpen) {
+            ModalBottomSheet(
+                sheetState = sheetState,
+                modifier = Modifier.fillMaxHeight(0.2f),
+                onDismissRequest = { isSheetOpen = false },
+                windowInsets = WindowInsets(0.dp)
+            ) {
+                TriStateItem(label = stringResource(R.string.action_filter_unread), state = showUnread, onClick = { showUnread = !showUnread})
+            }
+        }
         val topPadding = contentPadding.calculateTopPadding()
         val layoutDirection = LocalLayoutDirection.current
+
         VerticalFastScroller(
             listState = lazyListState,
             topContentPadding = topPadding,
@@ -146,7 +187,7 @@ fun BookScreen(
                     BookActionRow(
                         inLibrary = state.book.value.inLibrary,
                         trackingStatus = false,
-                        onAddToLibraryClicked = { /*TODO*/ },
+                        onAddToLibraryClicked = viewModel::libraryUpdate,
                         onTrackingClicked = { /*TODO*/ },
                         onEditIntervalClicked = { /*TODO*/ },
                         onEditCategory = { /*TODO*/ })
@@ -173,7 +214,7 @@ fun BookScreen(
                     ChapterHeader(enabled = true, chapterCount = state.chapters.size, onClick = {  })
                 }
                 items(
-                    items = state.chapters.reversed(),
+                    items = state.chapters,
                     key = { "_" + it.chapter.url},
                     contentType = { 4 }
                 ) {

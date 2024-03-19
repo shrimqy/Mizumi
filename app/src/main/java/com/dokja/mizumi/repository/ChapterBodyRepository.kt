@@ -1,5 +1,6 @@
 package com.dokja.mizumi.repository
 
+import com.dokja.mizumi.data.Response
 import com.dokja.mizumi.data.local.AppDatabaseOperations
 import com.dokja.mizumi.data.local.chapter.ChapterBody
 import com.dokja.mizumi.data.local.chapter.ChapterBodyDao
@@ -24,6 +25,21 @@ class ChapterBodyRepository(
         insertReplace(chapterBody)
         if (title != null)
             bookChaptersRepository.updateTitle(chapterBody.url, title)
+    }
+
+    suspend fun fetchBody(urlChapter: String, tryCache: Boolean = true): Response<String> {
+        if (tryCache) chapterBodyDao.get(urlChapter)?.let {
+            return@fetchBody Response.Success(it.body)
+        }
+
+        return Response.Error(
+            """
+            Unable to load chapter from url:
+            $urlChapter
+            
+            Source is local but chapter content missing.
+        """.trimIndent(), Exception()
+        )
     }
 
 }
