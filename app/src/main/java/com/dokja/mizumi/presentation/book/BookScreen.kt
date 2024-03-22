@@ -1,8 +1,8 @@
 package com.dokja.mizumi.presentation.book
 
 import android.content.Intent
-import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,7 +18,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.SortByAlpha
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -53,6 +57,7 @@ import com.dokja.mizumi.presentation.book.components.BookInfoHeader
 import com.dokja.mizumi.presentation.book.components.ChapterHeader
 import com.dokja.mizumi.presentation.book.components.ChapterListItem
 import com.dokja.mizumi.presentation.book.components.ExpandableMangaDescription
+import com.dokja.mizumi.presentation.book.components.TernaryStateToggle
 import com.dokja.mizumi.presentation.book.components.TriStateItem
 import com.dokja.mizumi.presentation.common.VerticalFastScroller
 import com.dokja.mizumi.presentation.common.screens.EmptyScreen
@@ -90,10 +95,6 @@ fun BookScreen(
     var isSheetOpen by rememberSaveable {
         mutableStateOf(false)
     }
-
-
-    Log.d("Mutable:", "$showUnread")
-    Log.d("user:", "${userPreferences.showUnread}")
 
     //Custom topBarTitleColor
     val topAppBarElementColor = if (scrollBehavior.state.overlappedFraction > 0) {
@@ -155,11 +156,24 @@ fun BookScreen(
         if (isSheetOpen) {
             ModalBottomSheet(
                 sheetState = sheetState,
-                modifier = Modifier.fillMaxHeight(0.2f),
+                modifier = Modifier.fillMaxHeight(0.4f),
                 onDismissRequest = { isSheetOpen = false },
                 windowInsets = WindowInsets(0.dp)
             ) {
-                TriStateItem(label = stringResource(R.string.action_filter_unread), state = showUnread, onClick = { showUnread = !showUnread})
+                Column() {
+                    Text(text = "Sort", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.padding(start = 15.dp))
+                    TernaryStateToggle(
+                        text = "By Chapter",
+                        state = userPreferences.sortOrder,
+                        onStateChange = { viewModel.updateSort(it.next()) },
+                        modifier = Modifier.fillMaxWidth(),
+                        activeIcon = { Icon(imageVector = Icons.Filled.ArrowUpward, null) },
+                        inverseIcon = { Icon(imageVector = Icons.Filled.ArrowDownward, null) },
+                        inactiveIcon = { Icon(imageVector = Icons.Filled.SortByAlpha, null) },
+                    )
+                    Text(text = "Filters", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.padding(start = 15.dp))
+                    TriStateItem(label = stringResource(R.string.action_filter_unread), state = showUnread, onClick = { showUnread = !showUnread})
+                }
             }
         }
         val topPadding = contentPadding.calculateTopPadding()
@@ -248,4 +262,3 @@ fun BookScreen(
         }
     }
 }
-//rootNavController.navigate("reader?bookUrl=${it.chapter.url}&chapterUrl=${state.book.value.url}")

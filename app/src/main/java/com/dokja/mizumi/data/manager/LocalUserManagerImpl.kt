@@ -18,7 +18,11 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "li
 
 enum class SortOrder {
     Descending,
-    Ascending
+    Ascending;
+    fun next() = when (this) {
+        Descending -> Ascending
+        Ascending -> Descending
+    }
 }
 
 data class UserPreferences(

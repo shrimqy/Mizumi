@@ -94,7 +94,11 @@ class BookViewModel @Inject constructor(
                     } else {
                         chapters // Return all chapters if showUnread is false
                     }
-                    filteredChapters
+                    val sortedChapters = when (preferences.sortOrder) {
+                        SortOrder.Descending -> filteredChapters.sortedByDescending { it.chapter.position }
+                        SortOrder.Ascending -> filteredChapters.sortedBy { it.chapter.position }
+                    }
+                    sortedChapters
                 }
                 .collect {
                     state.chapters.clear()
@@ -107,8 +111,6 @@ class BookViewModel @Inject constructor(
                 _userPreferences.value = it
             }
         }
-
-
     }
 
     private suspend fun getLastReadChapter(): String? {
@@ -148,17 +150,17 @@ class BookViewModel @Inject constructor(
     }
 
 
-
-
-
-
     fun updateShowUnread(showUnread: Boolean) {
         viewModelScope.launch{
             localUserManager.updateUnread(showUnread)
         }
     }
 
-
+    fun updateSort(sortOrder: SortOrder) {
+        viewModelScope.launch{
+            localUserManager.updateSort(sortOrder)
+        }
+    }
 
 
     private fun importUriContent() {
@@ -175,9 +177,6 @@ class BookViewModel @Inject constructor(
             ).onError { state.error.value = it.message }
         }
     }
-
-
-
 
 
 }

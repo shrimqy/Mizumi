@@ -41,6 +41,7 @@
     <string name="label_more">More</string>
 
     <string name="action_filter_unread">Unread</string>
+    <string name="action_filter_bookmarked">Bookmarked</string>
 
 
     <string name="action_bookmark">Bookmark chapter</string>
