@@ -455,6 +455,7 @@ class ReaderActivity : BaseActivity() {
         viewModel.updateInfoViewTo(itemIndex)
     }
 
+
     override fun onPause() {
         updateCurrentReadingPosSavingState(
             firstVisibleItemIndex = viewAdapter.listView.fromPositionToIndex(
