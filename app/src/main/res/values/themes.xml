@@ -3,5 +3,5 @@
 
     <style name="Theme.Mizumi" parent="android:Theme.Material.Light.NoActionBar" />
 
-
+    <style name="Theme.Reader.Activity" parent="Theme.AppCompat.DayNight.NoActionBar" />
 </resources>

@@ -2,6 +2,6 @@
 
 <View xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/padding"
-	style="@style/TextAppearance.AppCompat.Body1"
+	style="@style/myReaderTextStyle"
 	android:layout_width="match_parent"
 	android:layout_height="700sp" />

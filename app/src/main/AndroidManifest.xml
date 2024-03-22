@@ -65,7 +65,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".presentation.reader.ReaderActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            />
         <service
             android:name=".services.EpubImportService"
             android:foregroundServiceType="dataSync"

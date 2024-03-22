@@ -62,9 +62,6 @@ class BookViewModel @Inject constructor(
             BookScreenState.BookState(title = bookTitle, url = bookUrl, coverImageUrl = null)
         )
 
-
-
-
     private val _userPreferences = MutableStateFlow(
         UserPreferences(
             showUnread = false, // Default value for showUnread
@@ -106,12 +103,43 @@ class BookViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            localUserManager.preferences().collect {
+            localUserManager.userBookPreferences().flowOn(Dispatchers.IO).collect {
                 _userPreferences.value = it
             }
         }
 
+
     }
+
+    private suspend fun getLastReadChapter(): String? {
+        return appRepository.libraryBooks.get(bookUrl)?.lastReadChapter
+            ?: appRepository.bookChapters.getFirstChapter(bookUrl)?.url
+    }
+
+//    suspend fun onOpenLastActiveChapter() {
+//        viewModelScope.launch {
+//            val lastReadChapter = getLastReadChapter()
+//                ?: state.chapters.minByOrNull { it.chapter.position }?.chapter?.url
+//                ?: return@launch
+//
+//            openBookAtChapter(chapterUrl = lastReadChapter)
+//        }
+//    }
+//    fun Context.goToReader(bookUrl: String, chapterUrl: String) {
+//        ReaderActivity
+//            .IntentData(this, bookUrl = bookUrl, chapterUrl = chapterUrl)
+//            .let(::startActivity)
+//
+//    }
+//    fun openBookAtChapter(chapterUrl: String) =
+//        goToReader(
+//        bookUrl = state.book.value.url, chapterUrl = chapterUrl
+//    )
+
+
+
+
+
     fun libraryUpdate() {
         viewModelScope.launch {
             val isBookmarked = appRepository.libraryUpdate(bookTitle = bookTitle, bookUrl = bookUrl)
@@ -119,11 +147,18 @@ class BookViewModel @Inject constructor(
         }
     }
 
+
+
+
+
+
     fun updateShowUnread(showUnread: Boolean) {
         viewModelScope.launch{
             localUserManager.updateUnread(showUnread)
         }
     }
+
+
 
 
     private fun importUriContent() {
@@ -140,6 +175,10 @@ class BookViewModel @Inject constructor(
             ).onError { state.error.value = it.message }
         }
     }
+
+
+
+
 
 }
 

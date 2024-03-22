@@ -13,12 +13,14 @@ import com.dokja.mizumi.domain.manager.LocalUserManager
 import com.dokja.mizumi.domain.usecases.AppEntryUseCases
 import com.dokja.mizumi.domain.usecases.ReadAppEntry
 import com.dokja.mizumi.domain.usecases.SaveAppEntry
+import com.dokja.mizumi.presentation.reader.manager.ReaderManager
 import com.dokja.mizumi.repository.AppFileResolver
 import com.dokja.mizumi.repository.AppRepository
 import com.dokja.mizumi.repository.BookChaptersRepository
 import com.dokja.mizumi.repository.ChapterBodyRepository
 import com.dokja.mizumi.repository.LibraryBookRepository
 import com.dokja.mizumi.utils.NotificationsCenter
+
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -159,21 +161,19 @@ object AppModule {
         return NotificationsCenter(context)
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideReaderManager(
-//        appRepository: AppRepository,
-//        translationManager: TranslationManager,
-//        appPreferences: AppPreferences,
-//        appCoroutineScope: AppCoroutineScope,
-//        @ApplicationContext context: Context
-//    ): ReaderManager {
-//        return ReaderManager(
-//            appRepository,
-//            translationManager,
-//            appPreferences,
-//            context,
-//            appScope = appCoroutineScope
-//        )
-//    }
+    @Provides
+    @Singleton
+    fun provideReaderManager(
+        appRepository: AppRepository,
+        appCoroutineScope: AppCoroutineScope,
+        @ApplicationContext context: Context,
+        localUserManager: LocalUserManager
+    ): ReaderManager {
+        return ReaderManager(
+            appRepository,
+            context,
+            appScope = appCoroutineScope,
+            localUserManager = localUserManager
+        )
+    }
 }

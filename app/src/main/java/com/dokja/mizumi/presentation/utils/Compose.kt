@@ -1,5 +1,6 @@
 package com.dokja.mizumi.presentation.utils
 
+import android.content.Context
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
@@ -9,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import com.dokja.mizumi.presentation.reader.ReaderActivity
 
 @Composable
 fun LazyListState.isAtTop(threshold: Dp) = run {
@@ -37,3 +39,5 @@ fun ScrollState.isAtTop(threshold: Dp) = run {
         }
     }
 }
+
+

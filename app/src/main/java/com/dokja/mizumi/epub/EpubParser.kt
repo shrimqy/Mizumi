@@ -1,7 +1,6 @@
 package com.dokja.mizumi.epub
 
 import android.graphics.BitmapFactory
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -125,7 +124,6 @@ suspend fun epubParser(
 
     val metadataTitle = metadata.selectFirstChildTag("dc:title")?.textContent
         ?: "Unknown Title"
-    Log.d("Parser", "coverImage: $metadataTitle")
     val metadataCreator = metadata.selectFirstChildTag("dc:creator")?.textContent
 
     val metadataDesc = metadata.selectFirstChildTag("dc:description")?.textContent
@@ -164,7 +162,6 @@ suspend fun epubParser(
                 imgSrc = "$rootPath/$imgSrc" // Add the prefix
             }
 
-            Log.d("Parser", "imgSrc: $imgSrc")
             val imgFile = files[imgSrc]
 
 
@@ -179,7 +176,6 @@ suspend fun epubParser(
     var coverImage = manifestItems[metadataCoverId]
         ?.let { files[it.absPath] }
         ?.let { EpubImage(absPath = it.absPath, image = it.data) }
-    Log.d("Parser", "coverImage: $coverImage")
 
     // 2. Fallback: Check the `<guide>` tag if the primary method didn't yield a cover
     if (coverImage == null) {
@@ -191,10 +187,8 @@ suspend fun epubParser(
             val manifestCoverItem = manifestItems["cover"]
             coverHref = manifestCoverItem?.absPath
         }
-        Log.d("Parser", "href: $coverHref")
         if (coverHref != null) {
             val coverFile = files[coverHref]
-            Log.d("Parser", "coverFile: $coverFile")
             if (coverFile != null) {
                 coverImage = parseCoverImageFromXhtml(coverFile)
             }
@@ -202,8 +196,6 @@ suspend fun epubParser(
 
 
     }
-    Log.d("Parser", "final coverImage: $coverImage")
-
 
     val ncxFilePath = manifestItems["ncx"]?.absPath
     val ncxFile = files[ncxFilePath] ?: throw Exception("ncx file missing")
@@ -243,38 +235,41 @@ suspend fun epubParser(
     spine.selectChildTag("itemref").forEach { itemRef ->
         val itemId = itemRef.getAttribute("idref")
         val spineItem = manifestItems[itemId]
+
         // Check if the spine item exists and is a chapter
         if (spineItem != null && isChapter(spineItem)) {
             var chapterUrl = spineItem.absPath
-            Log.d("Parser", "chapter: $chapterUrl")
             if (!chapterUrl.startsWith(rootPath))
                 chapterUrl = "$rootPath/$chapterUrl"
             val tocEntry = findTocEntryForChapter(tocEntries, chapterUrl)
-            Log.d("Parser", "tocEntry: $tocEntries")
+
+            val parser = EpubXMLFileParser(chapterUrl, files[chapterUrl]?.data ?: ByteArray(0), files)
+            val res = parser.parseAsDocument()
+            // Append the chapter content to the current chapter body
+            currentChapterBody += if (res.body.isBlank()) "" else "\n\n" + res.body
             // If the ToC entry exists, create a new chapter or append to the current one
             if (tocEntry != null) {
-                if (currentChapterBody.isNotEmpty()) {
+                if(spineItem.mediaType.startsWith("image/")) {
+
+                    chapters.add(EpubChapter("image_${spineItem.absPath}", null, parser.parseAsImage(spineItem.absPath)))
+                }
+                else if (currentChapterBody.isNotEmpty()) {
+//                    Log.d("tocEntry", "${tocEntry.chapterTitle}")
                     chapters.add(EpubChapter(chapterUrl, tocEntry.chapterTitle, currentChapterBody))
                     currentChapterBody = ""
                 }
                 currentChapterIndex++
             }
-
-            val parser = EpubXMLFileParser(chapterUrl, files[chapterUrl]?.data ?: ByteArray(0), files)
-            val res = parser.parseAsDocument()
-
-            // Append the chapter content to the current chapter body
-            currentChapterBody += if (res.body.isBlank()) "" else "\n\n" + res.body
         }
     }
 
     // Add the last chapter (only if it's a real chapter)
-    val lastSpineItem = spine.selectChildTag("itemref").lastOrNull()?.let { manifestItems[it.getAttribute("idref")] }
-    if (lastSpineItem != null && isChapter(lastSpineItem)) {
-        val lastChapterUrl = lastSpineItem.absPath
-        val lastChapterTitle = if (tocEntries.last().chapterLink == lastChapterUrl) tocEntries.last().chapterTitle else "Chapter ${currentChapterIndex + 1}"
-        chapters.add(EpubChapter(lastChapterUrl, lastChapterTitle, currentChapterBody))
-    }
+//    val lastSpineItem = spine.selectChildTag("itemref").lastOrNull()?.let { manifestItems[it.getAttribute("idref")] }
+//    if (lastSpineItem != null && isChapter(lastSpineItem)) {
+//        val lastChapterUrl = lastSpineItem.absPath
+//        val lastChapterTitle = if (tocEntries.last().chapterLink == lastChapterUrl) tocEntries.last().chapterTitle else "Chapter ${currentChapterIndex + 1}"
+//        chapters.add(EpubChapter(lastChapterUrl, lastChapterTitle, currentChapterBody))
+//    }
 
 
     val imageExtensions =
@@ -328,7 +323,7 @@ class EpubXMLFileParser(
     }
 
 
-    private fun parseAsImage(absolutePathImage: String): String {
+    fun parseAsImage(absolutePathImage: String): String {
         // Use run catching so it can be run locally without crash
         val bitmap = zipFile[absolutePathImage]?.data?.runCatching {
             BitmapFactory.decodeByteArray(this, 0, this.size)

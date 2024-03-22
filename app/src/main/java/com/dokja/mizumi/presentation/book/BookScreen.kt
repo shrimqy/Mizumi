@@ -1,5 +1,6 @@
 package com.dokja.mizumi.presentation.book
 
+import android.content.Intent
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,6 +56,7 @@ import com.dokja.mizumi.presentation.book.components.ExpandableMangaDescription
 import com.dokja.mizumi.presentation.book.components.TriStateItem
 import com.dokja.mizumi.presentation.common.VerticalFastScroller
 import com.dokja.mizumi.presentation.common.screens.EmptyScreen
+import com.dokja.mizumi.presentation.reader.ReaderActivity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,8 +64,9 @@ fun BookScreen(
     rawBookUrl: String,
     bookTitle: String,
     libraryId: String,
-    rootNavController: NavController
+    rootNavController: NavController,
 ) {
+    val context = LocalContext.current
     val viewModel: BookViewModel = hiltViewModel()
     val state = viewModel.state
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -86,6 +90,8 @@ fun BookScreen(
     var isSheetOpen by rememberSaveable {
         mutableStateOf(false)
     }
+
+
     Log.d("Mutable:", "$showUnread")
     Log.d("user:", "${userPreferences.showUnread}")
 
@@ -138,7 +144,6 @@ fun BookScreen(
                             DropdownMenu(
                                 expanded = showDropDown,
                                 onDismissRequest = { showDropDown = false }) {
-
                             }
                         }
                     }
@@ -221,7 +226,13 @@ fun BookScreen(
                     ChapterListItem(
                         chapterWithContext = it,
                         selected = false,
-                        onClick = {},
+                        onClick = {
+                            val intent = Intent(context, ReaderActivity::class.java).apply {
+                                putExtra("bookUrl",  state.book.value.url)
+                                putExtra("chapterUrl", it.chapter.url)
+                            }
+                            context.startActivity(intent)
+                        },
                         onLongClick = {},
                         bookmark = false,
                         readProgress = null,
@@ -237,3 +248,4 @@ fun BookScreen(
         }
     }
 }
+//rootNavController.navigate("reader?bookUrl=${it.chapter.url}&chapterUrl=${state.book.value.url}")

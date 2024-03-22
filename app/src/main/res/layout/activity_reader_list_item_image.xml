@@ -17,12 +17,11 @@
 		android:layout_height="0dp"
 		android:layout_gravity="center"
 		android:adjustViewBounds="true"
-		android:contentDescription="@string/chapter_error"
+		android:contentDescription="@string/show_title"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintDimensionRatio="1:1.45"
 		app:layout_constraintHeight_default="percent"
 		app:layout_constraintLeft_toLeftOf="parent"
 		app:layout_constraintRight_toRightOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		tools:src="@drawable/cover_error" />
+		app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
