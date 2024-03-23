@@ -12,6 +12,7 @@ class ReaderScreenState(
     val showInvalidChapterDialog: MutableState<Boolean>
 ) {
     data class CurrentInfo(
+        val bookTitle: State<String>,
         val chapterTitle: State<String>,
         val chapterCurrentNumber: State<Int>,
         val chapterPercentageProgress: State<Float>,

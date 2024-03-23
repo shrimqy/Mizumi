@@ -1,5 +1,6 @@
 package com.dokja.mizumi.presentation.reader
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -7,13 +8,11 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.displayCutoutPadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Divider
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,10 +25,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import com.dokja.mizumi.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,52 +51,62 @@ fun ReaderScreen(
                 exit = shrinkVertically(targetHeight = { 0 }, shrinkTowards = Alignment.Top)
                         + fadeOut(),
             ) {
-                Surface(color = MaterialTheme.colorScheme.surfaceTint) {
-                    Column(modifier = Modifier.displayCutoutPadding()) {
+                Surface() {
+                    Log.d("screen", "${state.readerInfo.chapterCurrentNumber.value}")
+                    Column() {
                         TopAppBar(
                             colors = TopAppBarDefaults.topAppBarColors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                                 scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                             ),
                             title = {
-                                Text(
-                                    text = state.readerInfo.chapterTitle.value,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier.animateContentSize()
-                                )
+                                Column(
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = state.readerInfo.bookTitle.value,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier.animateContentSize()
+                                    )
+                                    Text(
+                                        text = state.readerInfo.chapterTitle.value,
+                                        style = MaterialTheme.typography.titleSmall,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier.animateContentSize()
+                                    )
+                                }
                             },
                             navigationIcon = {
                                 IconButton(onClick = onPressBack) {
-                                    Icon(Icons.Filled.ArrowBack, null)
+                                    Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
                                 }
                             },
                             actions = {
                             }
                         )
-                        Column(
-                            modifier = Modifier
-                                .padding(bottom = 8.dp)
-                                .padding(horizontal = 16.dp),
-                        ) {
-                            Text(
-                                text = stringResource(
-                                    id = R.string.show_chapter_number,
-                                    state.readerInfo.chapterCurrentNumber.value,
-                                    state.readerInfo.chaptersCount.value,
-                                ),
-                                style = MaterialTheme.typography.labelMedium,
-                            )
-                            Text(
-                                text = stringResource(
-                                    id = R.string.show_chapter_number,
-                                    state.readerInfo.chapterPercentageProgress.value
-                                ),
-                                style = MaterialTheme.typography.labelMedium,
-                            )
-                        }
-                        Divider()
+//                        Column(
+//                            modifier = Modifier
+//                                .padding(bottom = 8.dp)
+//                                .padding(horizontal = 16.dp),
+//                        ) {
+//                            Text(
+//                                text = stringResource(
+//                                    id = R.string.show_chapter_number,
+//                                    state.readerInfo.chapterCurrentNumber.value,
+//                                    state.readerInfo.chaptersCount.value,
+//                                ),
+//                                style = MaterialTheme.typography.labelMedium,
+//                            )
+//                            Text(
+//                                text = stringResource(
+//                                    id = R.string.show_chapter_number,
+//                                    state.readerInfo.chapterPercentageProgress.value
+//                                ),
+//                                style = MaterialTheme.typography.labelMedium,
+//                            )
+//                        }
                     }
                 }
             }

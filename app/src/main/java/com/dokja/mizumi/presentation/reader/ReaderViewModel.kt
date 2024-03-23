@@ -62,6 +62,7 @@ class ReaderViewModel @Inject constructor(
     val state = ReaderScreenState(
         showReaderInfo = mutableStateOf(false),
         readerInfo = ReaderScreenState.CurrentInfo(
+            bookTitle = derivedStateOf { readerSession.bookTitle!! },
             chapterTitle = derivedStateOf {
                 readingPosStats.value?.chapterTitle ?: ""
             },
@@ -87,6 +88,7 @@ class ReaderViewModel @Inject constructor(
         ),
         showInvalidChapterDialog = mutableStateOf(false)
     )
+
 
     init {
         showInvalidChapterDialog = {

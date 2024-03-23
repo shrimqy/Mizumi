@@ -63,12 +63,13 @@ class ReaderChaptersLoader(
         val item = items.getOrNull(itemIndex) ?: return null
         if (item !is ReaderItem.Position) return null
         val chapterStats = chaptersStats[chapterUrl] ?: return null
+
         return ReadingChapterPosStats(
             chapterIndex = item.chapterIndex,
             chapterCount = orderedChapters.size,
             chapterItemPosition = item.chapterItemPosition,
             chapterItemsCount = chapterStats.itemsCount,
-            chapterTitle = chapterStats.chapter.title!!,
+            chapterTitle = chapterStats.chapter.title,
             chapterUrl = chapterStats.chapter.url,
         )
     }
