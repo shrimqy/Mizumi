@@ -1,5 +1,7 @@
 package com.dokja.mizumi.presentation.book
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -13,6 +15,7 @@ import com.dokja.mizumi.domain.manager.LocalUserManager
 import com.dokja.mizumi.isContentUri
 import com.dokja.mizumi.presentation.BaseViewModel
 import com.dokja.mizumi.presentation.library.toState
+import com.dokja.mizumi.presentation.reader.ReaderActivity
 import com.dokja.mizumi.repository.AppFileResolver
 import com.dokja.mizumi.repository.AppRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -77,17 +80,23 @@ class BookViewModel @Inject constructor(
         chapters = mutableStateListOf(),
         selectedChaptersUrl = mutableStateMapOf(),
     )
+
+
     init {
         appScope.launch {
             if (rawBookUrl.isContentUri && appRepository.libraryBooks.get(bookUrl) == null) {
                 importUriContent()
             }
         }
-
+        viewModelScope.launch {
+            localUserManager.userBookPreferences().collect {
+                _userPreferences.value = it
+            }
+        }
         viewModelScope.launch {
             appRepository.bookChapters.getChaptersWithContextFlow(bookUrl)
                 // Sort the chapters given the order preference
-                .flowOn(Dispatchers.Default)
+                .flowOn(Dispatchers.IO)
                 .combine(userPreferences) { chapters, preferences ->
                     val filteredChapters = if (preferences.showUnread) {
                         chapters.filter { !it.chapter.read } // Filter unread chapters
@@ -106,41 +115,34 @@ class BookViewModel @Inject constructor(
                 }
         }
 
-        viewModelScope.launch {
-            localUserManager.userBookPreferences().flowOn(Dispatchers.IO).collect {
-                _userPreferences.value = it
-            }
-        }
+
     }
 
-    private suspend fun getLastReadChapter(): String? {
+    suspend fun getLastReadChapter(): String? {
         return appRepository.libraryBooks.get(bookUrl)?.lastReadChapter
             ?: appRepository.bookChapters.getFirstChapter(bookUrl)?.url
     }
+    fun onOpenLastActiveChapter(context: Context) {
+        viewModelScope.launch {
+            val lastReadChapter = getLastReadChapter()
+                ?: state.chapters.minByOrNull { it.chapter.position }?.chapter?.url
+                ?: return@launch
 
-//    suspend fun onOpenLastActiveChapter() {
-//        viewModelScope.launch {
-//            val lastReadChapter = getLastReadChapter()
-//                ?: state.chapters.minByOrNull { it.chapter.position }?.chapter?.url
-//                ?: return@launch
-//
-//            openBookAtChapter(chapterUrl = lastReadChapter)
-//        }
-//    }
-//    fun Context.goToReader(bookUrl: String, chapterUrl: String) {
-//        ReaderActivity
-//            .IntentData(this, bookUrl = bookUrl, chapterUrl = chapterUrl)
-//            .let(::startActivity)
-//
-//    }
-//    fun openBookAtChapter(chapterUrl: String) =
-//        goToReader(
-//        bookUrl = state.book.value.url, chapterUrl = chapterUrl
-//    )
+            openBookAtChapter(context, chapterUrl = lastReadChapter)
+        }
+    }
 
+    private fun openBookAtChapter(context: Context, chapterUrl: String) = goToReader(
+        context = context, bookUrl = state.book.value.url, chapterUrl = chapterUrl
+    )
 
-
-
+    private fun goToReader(context: Context, bookUrl: String, chapterUrl: String) {
+        val intent = Intent(context, ReaderActivity::class.java).apply {
+            putExtra("bookUrl",  bookUrl)
+            putExtra("chapterUrl", chapterUrl)
+        }
+        context.startActivity(intent)
+    }
 
     fun libraryUpdate() {
         viewModelScope.launch {
@@ -148,6 +150,7 @@ class BookViewModel @Inject constructor(
                 val msg = if (isBookmarked) R.string.add_to_library else R.string.remove_from_library
         }
     }
+
 
 
     fun updateShowUnread(showUnread: Boolean) {

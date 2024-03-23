@@ -3,7 +3,6 @@ package com.dokja.mizumi.presentation.reader.manager
 import android.content.Context
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshotFlow
 import com.dokja.mizumi.data.local.chapter.Chapter
 import com.dokja.mizumi.data.manager.ReaderPreferences
 import com.dokja.mizumi.di.AppCoroutineScope

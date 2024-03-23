@@ -1,7 +1,11 @@
 package com.dokja.mizumi.presentation.book
 
 import android.content.Intent
+import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -21,9 +25,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.SortByAlpha
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +44,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -49,6 +56,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastAny
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dokja.mizumi.R
@@ -62,6 +70,8 @@ import com.dokja.mizumi.presentation.book.components.TriStateItem
 import com.dokja.mizumi.presentation.common.VerticalFastScroller
 import com.dokja.mizumi.presentation.common.screens.EmptyScreen
 import com.dokja.mizumi.presentation.reader.ReaderActivity
+import com.dokja.mizumi.utils.isScrolledToEnd
+import com.dokja.mizumi.utils.isScrollingUp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,11 +100,15 @@ fun BookScreen(
         mutableStateOf(userPreferences.showUnread)
     }
     viewModel.updateShowUnread(showUnread)
+    Log.d("Mutableunread", "${userPreferences.showUnread}")
+    Log.d("unread", "$showUnread")
 
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable {
         mutableStateOf(false)
     }
+
+
 
     //Custom topBarTitleColor
     val topAppBarElementColor = if (scrollBehavior.state.overlappedFraction > 0) {
@@ -151,6 +165,32 @@ fun BookScreen(
                 )
         },
         bottomBar = {
+        },
+        floatingActionButton = {
+            val isFABVisible = remember(state.chapters.fastAny { !it.chapter.read }) {
+                state.chapters.fastAny { !it.chapter.read }
+            }
+            AnimatedVisibility(
+                visible = isFABVisible,
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
+                ExtendedFloatingActionButton(
+                    text = {
+                        val isReading = remember(state.chapters) {
+                            state.chapters.fastAny { it.chapter.read }
+                        }
+                        Text(
+                            text = stringResource(
+                                if (isReading) R.string.action_resume else R.string.action_start,
+                            ),
+                        )
+                    },
+                    icon = { Icon(imageVector = Icons.Filled.PlayArrow, contentDescription = null) },
+                    onClick = { viewModel.onOpenLastActiveChapter(context = context) },
+                    expanded = lazyListState.isScrollingUp() || lazyListState.isScrolledToEnd(),
+                )
+            }
         }
     ) { contentPadding ->
         if (isSheetOpen) {
@@ -185,6 +225,7 @@ fun BookScreen(
             endContentPadding = contentPadding.calculateEndPadding(layoutDirection)
         ) {
             LazyColumn(
+                state = lazyListState,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
                     start = contentPadding.calculateStartPadding(layoutDirection),
@@ -230,7 +271,7 @@ fun BookScreen(
                     key = "chapterHeader",
                     contentType = { 3 }
                 ) {
-                    ChapterHeader(enabled = true, chapterCount = state.chapters.size, onClick = {  })
+                    ChapterHeader(enabled = true, chapterCount = state.chapters.size, onClick = { isSheetOpen = true })
                 }
                 items(
                     items = state.chapters,
@@ -262,3 +303,4 @@ fun BookScreen(
         }
     }
 }
+
