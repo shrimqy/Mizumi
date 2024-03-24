@@ -49,7 +49,7 @@ class ReaderViewModel @Inject constructor(
 
     private val _readerPreferences = MutableStateFlow(
         ReaderPreferences(
-            fontSize = 14f,
+            fontSize = 15.6f,
             fontFamily = "serif",
             readerTTSVoiceId = "",
             readerTTSPitch = 1f,
@@ -71,7 +71,8 @@ class ReaderViewModel @Inject constructor(
             },
             chapterPercentageProgress = readerSession.readingChapterProgressPercentage,
             chaptersCount = derivedStateOf { readingPosStats.value?.chapterCount ?: 0 },
-            chapterUrl = derivedStateOf { readingPosStats.value?.chapterUrl ?: "" }
+            chapterUrl = derivedStateOf { readingPosStats.value?.chapterUrl ?: "" },
+//            chapters = derivedStateOf { chaptersLoader.orderedChapters }
         ),
         settings = ReaderScreenState.Settings(
             selectedSetting = mutableStateOf(ReaderScreenState.Settings.Type.None),

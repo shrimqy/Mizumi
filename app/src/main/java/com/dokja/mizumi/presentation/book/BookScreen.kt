@@ -1,7 +1,6 @@
 package com.dokja.mizumi.presentation.book
 
 import android.content.Intent
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -100,15 +99,11 @@ fun BookScreen(
         mutableStateOf(userPreferences.showUnread)
     }
     viewModel.updateShowUnread(showUnread)
-    Log.d("Mutableunread", "${userPreferences.showUnread}")
-    Log.d("unread", "$showUnread")
 
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable {
         mutableStateOf(false)
     }
-
-
 
     //Custom topBarTitleColor
     val topAppBarElementColor = if (scrollBehavior.state.overlappedFraction > 0) {
@@ -216,13 +211,13 @@ fun BookScreen(
                 }
             }
         }
-        val topPadding = contentPadding.calculateTopPadding()
         val layoutDirection = LocalLayoutDirection.current
+        val topPadding = contentPadding.calculateStartPadding(layoutDirection) + 112.dp
 
         VerticalFastScroller(
             listState = lazyListState,
             topContentPadding = topPadding,
-            endContentPadding = contentPadding.calculateEndPadding(layoutDirection)
+            endContentPadding = contentPadding.calculateEndPadding(layoutDirection),
         ) {
             LazyColumn(
                 state = lazyListState,

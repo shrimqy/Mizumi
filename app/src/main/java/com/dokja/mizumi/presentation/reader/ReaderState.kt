@@ -1,8 +1,8 @@
 package com.dokja.mizumi.presentation.reader
 
+//import com.dokja.mizumi.presentation.reader.components.LiveTranslationSettingData
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-//import com.dokja.mizumi.presentation.reader.components.LiveTranslationSettingData
 import com.dokja.mizumi.presentation.reader.components.TextToSpeechSettingData
 
 class ReaderScreenState(
@@ -17,14 +17,13 @@ class ReaderScreenState(
         val chapterCurrentNumber: State<Int>,
         val chapterPercentageProgress: State<Float>,
         val chaptersCount: State<Int>,
-        val chapterUrl: State<String>
+        val chapterUrl: State<String>,
     )
 
     data class Settings(
         val isTextSelectable: Boolean,
         val keepScreenOn: Boolean,
         val textToSpeech: TextToSpeechSettingData,
-//        val liveTranslation: ,
         val style: StyleSettingsData,
         val selectedSetting: MutableState<Type>,
     ) {
@@ -36,7 +35,7 @@ class ReaderScreenState(
         )
 
         enum class Type {
-            None, LiveTranslation, TextToSpeech, Style, More
+            None, ChapterList, TextToSpeech, Style, More
         }
     }
 }

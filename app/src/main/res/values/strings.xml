@@ -30,6 +30,8 @@
     <string name="minute_short">%dm</string>
     <string name="seconds_short">%ds</string>
 
+    <string name="action_settings">Settings</string>
+
     <string name="reader_no_more_chapters">༺  Last chapter  ༻</string>
     <string name="reader_first_chapter">༺  First chapter  ༻</string>
 

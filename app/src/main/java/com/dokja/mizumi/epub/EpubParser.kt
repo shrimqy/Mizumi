@@ -1,6 +1,7 @@
 package com.dokja.mizumi.epub
 
 import android.graphics.BitmapFactory
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -245,6 +246,7 @@ suspend fun epubParser(
 
             val parser = EpubXMLFileParser(chapterUrl, files[chapterUrl]?.data ?: ByteArray(0), files)
             val res = parser.parseAsDocument()
+//            Log.d("res", "${res.body}")
             // Append the chapter content to the current chapter body
             currentChapterBody += if (res.body.isBlank()) "" else "\n\n" + res.body
             // If the ToC entry exists, create a new chapter or append to the current one
@@ -254,7 +256,6 @@ suspend fun epubParser(
                     chapters.add(EpubChapter("image_${spineItem.absPath}", null, parser.parseAsImage(spineItem.absPath)))
                 }
                 else if (currentChapterBody.isNotEmpty()) {
-//                    Log.d("tocEntry", "${tocEntry.chapterTitle}")
                     chapters.add(EpubChapter(chapterUrl, tocEntry.chapterTitle, currentChapterBody))
                     currentChapterBody = ""
                 }
@@ -264,12 +265,12 @@ suspend fun epubParser(
     }
 
     // Add the last chapter (only if it's a real chapter)
-//    val lastSpineItem = spine.selectChildTag("itemref").lastOrNull()?.let { manifestItems[it.getAttribute("idref")] }
-//    if (lastSpineItem != null && isChapter(lastSpineItem)) {
-//        val lastChapterUrl = lastSpineItem.absPath
-//        val lastChapterTitle = if (tocEntries.last().chapterLink == lastChapterUrl) tocEntries.last().chapterTitle else "Chapter ${currentChapterIndex + 1}"
-//        chapters.add(EpubChapter(lastChapterUrl, lastChapterTitle, currentChapterBody))
-//    }
+    val lastSpineItem = spine.selectChildTag("itemref").lastOrNull()?.let { manifestItems[it.getAttribute("idref")] }
+    if (lastSpineItem != null && isChapter(lastSpineItem)) {
+        val lastChapterUrl = lastSpineItem.absPath
+        val lastChapterTitle = if (tocEntries.last().chapterLink == lastChapterUrl) tocEntries.last().chapterTitle else "Chapter ${currentChapterIndex + 1}"
+        chapters.add(EpubChapter(lastChapterUrl, lastChapterTitle, currentChapterBody))
+    }
 
 
     val imageExtensions =
@@ -314,8 +315,10 @@ class EpubXMLFileParser(
 
     fun parseAsDocument(): Output {
         val body = Jsoup.parse(data.inputStream(), "UTF-8", "").body()
+        Log.d("body","$body")
         val chapterTitle = body.selectFirst("h1, h2, h3, h4, h5, h6")?.text()
         body.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
+
         return Output(
             title = chapterTitle,
             body = getNodeStructuredText(body)

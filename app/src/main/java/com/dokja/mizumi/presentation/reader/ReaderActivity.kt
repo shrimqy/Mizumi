@@ -287,11 +287,12 @@ class ReaderActivity : BaseActivity() {
                     updateInfoView()
                     updateReadingState()
                 }
-
                 override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {
+                    viewModel.state.showReaderInfo.value = false
                     listIsScrolling = scrollState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE
                 }
-            })
+            }
+        )
 
         // Fullscreen mode that ignores any cutout, notch etc.
         WindowCompat.setDecorFitsSystemWindows(window, false)

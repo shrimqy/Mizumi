@@ -46,7 +46,6 @@ import androidx.compose.ui.util.fastFirstOrNull
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMaxBy
 import com.dokja.mizumi.presentation.common.Scroller.STICKY_HEADER_KEY_PREFIX
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -61,7 +60,6 @@ import kotlin.math.roundToInt
  *
  * Set key with [STICKY_HEADER_KEY_PREFIX] prefix to any sticky header item in the list.
  */
-@OptIn(FlowPreview::class)
 @Composable
 fun VerticalFastScroller(
     listState: LazyListState,
@@ -81,7 +79,7 @@ fun VerticalFastScroller(
         val scrollerConstraints = constraints.copy(minWidth = 0, minHeight = 0)
         val scrollerPlaceable = subcompose("scroller") {
             val layoutInfo = listState.layoutInfo
-            val showScroller = layoutInfo.visibleItemsInfo.size < layoutInfo.totalItemsCount
+            val showScroller = layoutInfo.visibleItemsInfo.size < layoutInfo.totalItemsCount && layoutInfo.totalItemsCount > 18
             if (!showScroller) return@subcompose
 
             val thumbTopPadding = with(LocalDensity.current) { topContentPadding.toPx() }
@@ -223,7 +221,6 @@ private fun rememberColumnWidthSums(
     }
 }
 
-@OptIn(FlowPreview::class)
 @Composable
 fun VerticalGridFastScroller(
     state: LazyGridState,

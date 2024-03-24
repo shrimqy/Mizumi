@@ -90,7 +90,7 @@ class LocalUserManagerImpl(
             emit(emptyPreferences())
         }
             .map { preferences->
-                val fontSize = preferences[ReaderPreferenceKeys.FONT_SIZE] ?: "14f"
+                val fontSize = preferences[ReaderPreferenceKeys.FONT_SIZE] ?: "15.6f"
                 val fontFamily = preferences[ReaderPreferenceKeys.FONT_FAMILY] ?: "serif"
                 val voiceId = preferences[ReaderPreferenceKeys.VOICE_ID] ?: ""
                 val voiceSpeed = preferences[ReaderPreferenceKeys.VOICE_SPEED] ?: "1f"

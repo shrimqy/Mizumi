@@ -6,6 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/translucent_current_reading_text_background"
+    android:fontFamily="serif"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
     android:textAlignment="inherit"
