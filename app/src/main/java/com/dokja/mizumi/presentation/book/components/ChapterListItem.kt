@@ -90,12 +90,12 @@ fun ChapterListItem(
                         color = LocalContentColor.current.copy(alpha = textSubtitleAlpha),
                     ),
                 ) {
-                    if (readProgress != null) {
+                    if (readProgress != null && !chapter.read && readProgress != "0") {
                         Text(
-                            text = readProgress,
+                            text = "Read $readProgress Pages",
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            color = LocalContentColor.current.copy(alpha = ReadItemAlpha),
+                            color = LocalContentColor.current.copy(alpha = textAlpha),
                         )
                     }
                 }

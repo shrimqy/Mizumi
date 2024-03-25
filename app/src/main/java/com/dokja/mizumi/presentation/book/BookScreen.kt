@@ -285,7 +285,7 @@ fun BookScreen(
                         },
                         onLongClick = {},
                         bookmark = false,
-                        readProgress = null,
+                        readProgress = it.chapter.lastReadPosition.toString(),
                     )
                 }
                 if (state.error.value.isNotBlank()) item(

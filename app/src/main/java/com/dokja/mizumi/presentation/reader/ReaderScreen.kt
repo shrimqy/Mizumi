@@ -7,10 +7,11 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,11 +26,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dokja.mizumi.presentation.reader.components.bottomBar.BottomReaderBar
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ReaderScreen(
     state: ReaderScreenState,
@@ -56,27 +56,30 @@ fun ReaderScreen(
                         + fadeOut(),
             ) {
                 TopAppBar(
-                    modifier = Modifier.padding(bottom = 5.dp),
+                    modifier = Modifier,
+                    windowInsets = TopAppBarDefaults.windowInsets,
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.99f),
-                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.99f),
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.99f),
+                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.99f),
                     ),
                     title = {
                         Column(
-                            verticalArrangement = Arrangement.Center
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
                         ) {
                             Text(
                                 text = state.readerInfo.bookTitle.value,
                                 style = MaterialTheme.typography.titleMedium,
-                                maxLines = 2,
+                                maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.animateContentSize()
                             )
                             Text(
                                 text = state.readerInfo.chapterTitle.value,
                                 style = MaterialTheme.typography.titleSmall,
+                                maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.animateContentSize()
+                                modifier = Modifier.animateContentSize().basicMarquee(delayMillis = 800)
                             )
                         }
                     },

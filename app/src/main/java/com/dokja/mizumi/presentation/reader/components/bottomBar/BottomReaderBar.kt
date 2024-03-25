@@ -1,5 +1,6 @@
 package com.dokja.mizumi.presentation.reader.components.bottomBar
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.outlined.ColorLens
 import androidx.compose.material.icons.outlined.FormatListNumbered
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,9 +49,10 @@ fun BottomReaderBar(
         enter = expandVertically(expandFrom = Alignment.Bottom) + fadeIn(),
         exit = shrinkVertically(shrinkTowards = Alignment.Bottom) + fadeOut(),
     ) {
+        Log.d("settings", "${state.settings.selectedSetting.value}")
         Column {
             ReaderScreenBottomBarDialogs(
-                settings = state.settings,
+                state = state,
                 chapters = chapters,
 //                onTextFontChanged = onTextFontChanged,
 //                onTextSizeChanged = onTextSizeChanged,
@@ -62,16 +65,17 @@ fun BottomReaderBar(
             BottomAppBar(
                 modifier = Modifier.clip(
                     RoundedCornerShape(
-                        topStart = 12.dp,
-                        topEnd = 12.dp
+                        topStart = 14.dp,
+                        topEnd = 14.dp
                     )
                 ),
-                containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.99f),
+                containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.97f),
+                windowInsets = BottomAppBarDefaults.windowInsets
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 12.dp, top = 3.dp),
+                        .padding(bottom = 12.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {

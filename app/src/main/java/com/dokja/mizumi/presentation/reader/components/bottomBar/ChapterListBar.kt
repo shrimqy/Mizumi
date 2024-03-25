@@ -1,5 +1,6 @@
 package com.dokja.mizumi.presentation.reader.components.bottomBar
 
+import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dokja.mizumi.data.local.chapter.Chapter
+import com.dokja.mizumi.presentation.reader.ReaderActivity
 import com.dokja.mizumi.presentation.reader.ReaderScreenState
 import com.dokja.mizumi.presentation.utils.ReadItemAlpha
 import com.dokja.mizumi.presentation.utils.SecondaryItemAlpha
@@ -53,12 +55,12 @@ fun ChapterListBar(
         sheetState = sheetState,
         onDismissRequest = { isSheetOpen = false; settings.selectedSetting.value = ReaderScreenState.Settings.Type.None  },
         windowInsets = WindowInsets(0.dp),
-        modifier = Modifier.fillMaxHeight(0.4f),
+        modifier = Modifier.fillMaxHeight(0.6f),
     ) {
         LazyColumn(
             state = lazyListState,
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(),
+            contentPadding = PaddingValues(bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
             horizontalAlignment = Alignment.Start,
         ) {
@@ -72,7 +74,13 @@ fun ChapterListBar(
                 var textHeight by remember { mutableIntStateOf(0) }
                 Column(
                     modifier = Modifier.weight(1f).fillMaxWidth().combinedClickable(
-                        onClick = {}
+                        onClick = {
+                            val intent = Intent(context, ReaderActivity::class.java).apply {
+                            putExtra("bookUrl",  it.bookUrl)
+                            putExtra("chapterUrl", it.url)
+                                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        }
+                            context.startActivity(intent) }
                     ),
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {

@@ -288,7 +288,8 @@ class ReaderActivity : BaseActivity() {
                     updateReadingState()
                 }
                 override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {
-                    viewModel.state.showReaderInfo.value = false
+                    if (!viewModel.state.settings.textToSpeech.isPlaying.value)
+                        viewModel.state.showReaderInfo.value = false
                     listIsScrolling = scrollState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE
                 }
             }

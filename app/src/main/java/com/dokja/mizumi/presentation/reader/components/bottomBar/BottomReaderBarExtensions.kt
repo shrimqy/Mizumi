@@ -16,7 +16,7 @@ import com.dokja.mizumi.presentation.reader.ReaderScreenState
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ReaderScreenBottomBarDialogs(
-    settings: ReaderScreenState.Settings,
+    state: ReaderScreenState,
     chapters: List<Chapter>,
 //    onTextFontChanged: (String) -> Unit,
 //    onTextSizeChanged: (Float) -> Unit,
@@ -31,11 +31,11 @@ fun ReaderScreenBottomBarDialogs(
         modifier = modifier.fillMaxWidth()
     ) {
         Box(Modifier.padding(horizontal = 24.dp)) {
-            AnimatedContent(targetState = settings.selectedSetting.value, label = "") { target ->
+            AnimatedContent(targetState = state.settings.selectedSetting.value, label = "") { target ->
                 when (target) {
                     ReaderScreenState.Settings.Type.ChapterList -> ChapterListBar(
                         chapters = chapters,
-                        settings = settings
+                        settings = state.settings
                     )
                     ReaderScreenState.Settings.Type.More -> MoreSettings(
 //                        allowTextSelection = settings.isTextSelectable.value,
@@ -44,7 +44,10 @@ fun ReaderScreenBottomBarDialogs(
 //                        onKeepScreenOn = onKeepScreenOn
                     )
                     ReaderScreenState.Settings.Type.None -> Unit
-                    ReaderScreenState.Settings.Type.TextToSpeech -> TODO()
+                    ReaderScreenState.Settings.Type.TextToSpeech -> TextToSpeech(
+                        state = state,
+                        settingsData = state.settings.textToSpeech
+                    )
                     ReaderScreenState.Settings.Type.Style -> TODO()
                 }
             }
