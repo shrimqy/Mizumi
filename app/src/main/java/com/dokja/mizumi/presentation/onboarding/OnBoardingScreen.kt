@@ -25,17 +25,20 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.dokja.mizumi.presentation.Dimens.MediumPadding2
 import com.dokja.mizumi.presentation.common.material.OnTextButton
 import com.dokja.mizumi.presentation.common.material.OnboardButton
 import com.dokja.mizumi.presentation.common.material.PageIndicator
+import com.dokja.mizumi.presentation.navgraph.AuthScreenGraph
 import com.dokja.mizumi.presentation.onboarding.components.OnBoardingPage
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnBoardingScreen(
-    onEvent: (OnBoardingEvent) -> Unit
+    onEvent: (OnBoardingEvent) -> Unit,
+    rootNavController: NavController
 ) {
     val notificationPermissionResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -63,8 +66,8 @@ fun OnBoardingScreen(
                 derivedStateOf {
                     when(pagerState.currentPage) {
                         0 -> listOf("", "GET STARTED")
-                        1 -> listOf("Back", "I UNDERSTAND")
-                        2 -> listOf("Back", "REGISTER")
+                        1 -> listOf("", "I UNDERSTAND")
+                        2 -> listOf("Skip", "LOGIN")
                         else -> listOf("", "")
                     }
                 }
@@ -72,6 +75,7 @@ fun OnBoardingScreen(
             HorizontalPager(state = pagerState) {index ->
                 OnBoardingPage(page = pages[index])
             }
+
         Spacer(modifier = Modifier.height(100.dp))
             Row(
                 modifier = Modifier
@@ -95,11 +99,16 @@ fun OnBoardingScreen(
                             text = buttonState.value[0],
                             onClick = {
                                 scope.launch {
-                                    pagerState.animateScrollToPage(
-                                        page = pagerState.currentPage - 1
-                                    )
+                                    if (pagerState.currentPage == 2) {
+                                        notificationPermissionResultLauncher.launch(
+                                            Manifest.permission.POST_NOTIFICATIONS
+                                        )
+                                    }else{
+                                        pagerState.animateScrollToPage(
+                                            page = pagerState.currentPage + 1
+                                        )
+                                    }
                                 }
-
                             }
                         )
                     }
@@ -109,9 +118,7 @@ fun OnBoardingScreen(
                         onClick = {
                             scope.launch {
                                 if (pagerState.currentPage == 2) {
-                                    notificationPermissionResultLauncher.launch(
-                                        Manifest.permission.POST_NOTIFICATIONS
-                                    )
+                                    rootNavController.navigate(AuthScreenGraph.Login.route)
                                 }else{
                                     pagerState.animateScrollToPage(
                                         page = pagerState.currentPage + 1

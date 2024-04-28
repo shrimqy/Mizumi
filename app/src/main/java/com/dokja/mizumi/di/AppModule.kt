@@ -9,6 +9,8 @@ import com.dokja.mizumi.data.local.chapter.ChapterBodyDao
 import com.dokja.mizumi.data.local.chapter.ChapterDao
 import com.dokja.mizumi.data.local.library.LibraryDao
 import com.dokja.mizumi.data.manager.LocalUserManagerImpl
+import com.dokja.mizumi.data.network.Constants
+import com.dokja.mizumi.data.network.MizuListApi
 import com.dokja.mizumi.domain.manager.LocalUserManager
 import com.dokja.mizumi.domain.usecases.AppEntryUseCases
 import com.dokja.mizumi.domain.usecases.ReadAppEntry
@@ -29,6 +31,8 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -64,6 +68,16 @@ object AppModule {
             chapterBodyRepository,
             appFileResolver
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideMizuListApi(): MizuListApi {
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(MizuListApi::class.java)
     }
 
     @Singleton

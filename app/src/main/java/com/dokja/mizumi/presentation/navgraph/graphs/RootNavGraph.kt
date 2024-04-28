@@ -13,7 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dokja.mizumi.presentation.MainScreen
 import com.dokja.mizumi.presentation.navgraph.Graph
 
-private const val NAVIGATION_ANIM_DURATION = 600
+private const val NAVIGATION_ANIM_DURATION = 400
 const val FADEIN_ANIM_DURATION = 400
 
 fun enterTransition() = slideInHorizontally(
@@ -54,6 +54,7 @@ fun RootNavGraph(startDestination: String) {
         popExitTransition = { popExitTransition() }
     ) {
         onBoardingNavGraph(rootNavController = rootNavController)
+        authNavGraph(rootNavController = rootNavController)
         composable(route = Graph.MainScreenGraph) {
             MainScreen(rootNavController = rootNavController)
         }

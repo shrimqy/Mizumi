@@ -31,7 +31,7 @@ class MainViewModel @Inject constructor(
             } else{
                 startDestination = Graph.OnboardingGraph
             }
-            delay(200)
+            delay(100)
             splashCondition = false
         }.launchIn(viewModelScope)
     }

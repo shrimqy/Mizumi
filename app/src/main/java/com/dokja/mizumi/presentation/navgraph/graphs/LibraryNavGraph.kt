@@ -51,7 +51,6 @@ fun NavGraphBuilder.libraryNavGraph(rootNavController: NavHostController) {
         ) { backStackEntry ->
             val bookUrl = backStackEntry.arguments?.getString("bookUrl") ?: ""
             val chapterUrl = backStackEntry.arguments?.getString("chapterUrl") ?: ""
-
         }
     }
 }

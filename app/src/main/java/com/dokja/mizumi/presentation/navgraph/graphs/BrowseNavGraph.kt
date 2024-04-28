@@ -20,6 +20,5 @@ fun NavGraphBuilder.browseNavGraph(rootNavController: NavHostController) {
         composable(route = BrowseRouteScreen.BrowseDetail.route, ) {
             BrowseScreen()
         }
-
     }
 }

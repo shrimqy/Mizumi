@@ -60,6 +60,10 @@ class LocalUserManagerImpl(
         val VOICE_PITCH = stringPreferencesKey("voice_pitch")
     }
 
+    object UserTokenKey {
+        val TOKEN = stringPreferencesKey("user_token")
+    }
+
     private val datastore = context.dataStore
     override suspend fun saveAppEntry() {
         datastore.edit { settings ->
@@ -70,6 +74,18 @@ class LocalUserManagerImpl(
     override fun readAppEntry(): Flow<Boolean> {
         return datastore.data.map { preferences ->
             preferences[PreferencesKeys.APP_ENTRY] ?: false
+        }
+    }
+
+    override suspend fun saveUserToken(token: String) {
+        datastore.edit { settings ->
+            settings[UserTokenKey.TOKEN] = token
+        }
+    }
+
+    override fun readUserToken(): Flow<String?> {
+        return datastore.data.map { preferences ->
+            preferences[UserTokenKey.TOKEN]
         }
     }
 

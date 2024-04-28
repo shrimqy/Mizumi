@@ -22,8 +22,8 @@ val pages = listOf(
         image = R.drawable.disclaimer
     ),
     Page(
-        title = "Connect to Litlog",
+        title = "Connect to MizuList",
         description = "Browse through the catalog and explore new worlds to enjoy. Maintain and track your lists connecting to our site. Stay in the loop of new stuff as they come.",
-        image = R.drawable.ic_tachi
+        image = R.drawable.ic_logo
     )
 )

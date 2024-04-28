@@ -6,6 +6,7 @@ const val BOOK_ID_ARG_KEY = "bookId"
 object Graph {
     const val RootGraph = "rootGraph"
     const val OnboardingGraph = "onBoardingGraph"
+    const val AuthScreenGraph = "authGraph"
     const val MainScreenGraph = "mainScreenGraph"
     const val LibraryScreenGraph = "libraryScreenGraph"
     const val BrowseScreenGraph = "browseScreenGraph"
@@ -16,8 +17,11 @@ object Graph {
 
 sealed class OnboardingRoute(var route: String) {
     data object OnboardingScreen: OnboardingRoute("onBoarding")
-    data object Login: OnboardingRoute("login")
-    data object Register: OnboardingRoute("register")
+}
+
+sealed class AuthScreenGraph(var route: String) {
+    data object Login: AuthScreenGraph("login")
+    data object Register: AuthScreenGraph("register")
 }
 
 sealed class MainRouteScreen(var route: String) {

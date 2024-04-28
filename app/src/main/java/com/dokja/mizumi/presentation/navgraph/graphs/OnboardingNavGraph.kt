@@ -18,13 +18,7 @@ fun NavGraphBuilder.onBoardingNavGraph(rootNavController: NavHostController) {
     ) {
         composable(route = OnboardingRoute.OnboardingScreen.route, exitTransition = { fadeOut() }) {
             val viewModel: OnBoardingViewModel = hiltViewModel()
-            OnBoardingScreen(onEvent = viewModel::onEvent)
+            OnBoardingScreen(onEvent = viewModel::onEvent, rootNavController = rootNavController)
         }
-//        composable(route = OnboardingRoute.Register.route) {
-//
-//        }
-//        composable(route = OnboardingRoute.Login.route) {
-//
-//        }
     }
 }

@@ -105,6 +105,11 @@ fun BookScreen(
         mutableStateOf(false)
     }
 
+    val trackingSheetState = rememberModalBottomSheetState()
+    var trackingSheet by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     //Custom topBarTitleColor
     val topAppBarElementColor = if (scrollBehavior.state.overlappedFraction > 0) {
         MaterialTheme.colorScheme.onBackground
@@ -211,6 +216,18 @@ fun BookScreen(
                 }
             }
         }
+        if (trackingSheet) {
+            ModalBottomSheet(
+                sheetState = trackingSheetState,
+                modifier = Modifier.fillMaxHeight(0.7f),
+                onDismissRequest = { trackingSheet = false },
+                windowInsets = WindowInsets(0.dp)
+            ) {
+
+            }
+        }
+
+
         val layoutDirection = LocalLayoutDirection.current
         val topPadding = contentPadding.calculateStartPadding(layoutDirection) + 112.dp
 
