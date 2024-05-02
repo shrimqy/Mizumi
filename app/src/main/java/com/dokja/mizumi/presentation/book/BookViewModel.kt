@@ -155,8 +155,10 @@ class BookViewModel @Inject constructor(
                     val bookResult = result?.books
                     searchResults.value = bookResult
                     Log.d("SearchResult", result.toString())
+                    Log.d("dd", "noice")
                 } else {
                     Log.e("SearchResult", "Error occurred: ${response.code()}")
+
                 }
             } catch (e: Exception) {
                 Log.e("SearchResult", "Error occurred: ${e.message}", e)
