@@ -41,7 +41,6 @@ fun ChapterListItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
-
 ) {
     val chapter = chapterWithContext.chapter
     val textAlpha = if (chapter.read) ReadItemAlpha else 1f

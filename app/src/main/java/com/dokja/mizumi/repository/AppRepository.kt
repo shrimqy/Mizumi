@@ -22,6 +22,7 @@ class AppRepository @Inject constructor(
     val libraryBooks: LibraryBookRepository,
     val bookChapters: BookChaptersRepository,
     val chapterBody: ChapterBodyRepository,
+    val tracker: TrackerRepository,
     private val appFileResolver: AppFileResolver,
 ) {
 

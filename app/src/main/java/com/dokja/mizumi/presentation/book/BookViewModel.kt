@@ -2,14 +2,21 @@ package com.dokja.mizumi.presentation.book
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.dokja.mizumi.R
+import com.dokja.mizumi.data.local.tracker.Track
 import com.dokja.mizumi.data.manager.SortOrder
 import com.dokja.mizumi.data.manager.UserPreferences
+import com.dokja.mizumi.data.network.MizuListApi
+import com.dokja.mizumi.data.network.UserBookCreateRequest
+import com.dokja.mizumi.data.network.models.Book
+import com.dokja.mizumi.data.network.models.UserBook
 import com.dokja.mizumi.di.AppCoroutineScope
 import com.dokja.mizumi.domain.manager.LocalUserManager
 import com.dokja.mizumi.isContentUri
@@ -21,9 +28,12 @@ import com.dokja.mizumi.repository.AppRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -35,12 +45,19 @@ interface ChapterStateBundle {
     val bookTitle: String
 }
 
+data class search(
+    val searchText: String = "",
+    val isSearching: Boolean = false,
+    val searchResults: List<Book> = emptyList()
+)
+
 @HiltViewModel
 class BookViewModel @Inject constructor(
     private val appRepository: AppRepository,
     private val appScope: AppCoroutineScope,
     private val appFileResolver: AppFileResolver,
     private val localUserManager: LocalUserManager,
+    private val api: MizuListApi,
     stateHandle: SavedStateHandle,
 ) : BaseViewModel(), ChapterStateBundle {
     override val rawBookUrl by StateExtraString(stateHandle)
@@ -81,6 +98,7 @@ class BookViewModel @Inject constructor(
         selectedChaptersUrl = mutableStateMapOf(),
     )
 
+    var trackingDetails: MutableState<Track?> = mutableStateOf(null)
 
     init {
         appScope.launch {
@@ -93,6 +111,14 @@ class BookViewModel @Inject constructor(
                 _userPreferences.value = it
             }
         }
+
+        viewModelScope.launch {
+            appRepository.tracker.getTrackByIdWithFlow(libraryId.toInt()).flowOn(Dispatchers.IO).collectLatest {
+                trackingDetails.value = it
+            }
+        }
+
+
         viewModelScope.launch {
             appRepository.bookChapters.getChaptersWithContextFlow(bookUrl)
                 // Sort the chapters given the order preference
@@ -114,20 +140,104 @@ class BookViewModel @Inject constructor(
                     state.chapters.addAll(it)
                 }
         }
+    }
+
+    val userIdFlow: Flow<String?> = localUserManager.readUserToken()
 
 
+    val searchResults = MutableStateFlow<List<Book>?>(null)
+    fun search(englishTitle: String) {
+        viewModelScope.launch {
+            try {
+                val response = api.search(englishTitle)
+                if (response.isSuccessful) {
+                    val result = response.body()
+                    val bookResult = result?.books
+                    searchResults.value = bookResult
+                    Log.d("SearchResult", result.toString())
+                } else {
+                    Log.e("SearchResult", "Error occurred: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                Log.e("SearchResult", "Error occurred: ${e.message}", e)
+            }
+        }
+    }
+
+    suspend fun insertTrack(bookId: String) {
+        // Collect the latest value emitted by the flow
+        val userId: String = userIdFlow.firstOrNull() ?: ""
+        var userBook: UserBook?
+        viewModelScope.launch {
+            try {
+                Log.d("IDSent", userId)
+                Log.d("IDSent", bookId)
+                val response = api.fetchUserBook(userId, bookId)
+                Log.d("DBResponse", "$response")
+                val userBooks = response?.userBooks
+                // Extract the UserBook object if it exists
+                userBook = userBooks
+
+                // Now you can use the userBook object as needed
+                Log.d("UserBook", "$userBook")
+                if (userBook != null) {
+                    val chapters = state.chapters
+
+                    // Iterate through the chapters list in reverse order
+                    val firstReadChapterFromBottom = chapters.reversed().firstOrNull { it.chapter.read }
+
+                    // If a read chapter is found, return it, otherwise return null
+                    val firstReadChapterFromBottomIndex = if (firstReadChapterFromBottom != null) {
+                        chapters.indexOf(firstReadChapterFromBottom) + 1
+                    } else {
+                        -1
+                    }
+
+                    val chapterTitle = firstReadChapterFromBottom?.chapter?.title
+
+                    val splitTitle = chapterTitle?.split(" ") // Split on whitespace
+                    val potentialNumber = splitTitle?.firstOrNull { it.matches(Regex("\\d+")) }
+
+                    val chapterNumber = potentialNumber?.toIntOrNull() ?: -1
+
+                    Log.d("lastReadChapter", "Chapter number: $chapterNumber")
+
+                    Log.d("lastRead", "$firstReadChapterFromBottomIndex")
+                    Log.d("lastRead", "$firstReadChapterFromBottom")
+
+                    Track(
+                        libraryId = libraryId.toInt(),
+                        bookCategory = userBook!!.bookCategories[1].id,
+                        bookId = bookId,
+                        chaptersRead = chapterNumber.toString(),
+                        userId = userId,
+                        rating = userBook?.rating,
+                        startedDate = userBook?.startedDate,
+                        completedAt = userBook?.completedAt
+                    ).let { appRepository.tracker.insertTrack(it) }
+                } else {
+                    Log.d("IDSent", intArrayOf(1, 2).toString())
+                    val userBookCreateRequest = UserBookCreateRequest(userId, bookId, intArrayOf(1, 2))
+                    val userBookCreationRes = api.createUserBook(userBookCreateRequest)
+                    Log.d("response", userBookCreationRes.toString())
+                }
+            }
+            catch (e: Exception) {
+                Log.e("Error", "Error occurred: ${e.message}", e)
+            }
+        }
     }
 
     suspend fun getLastReadChapter(): String? {
         return appRepository.libraryBooks.get(bookUrl)?.lastReadChapter
             ?: appRepository.bookChapters.getFirstChapter(bookUrl)?.url
     }
+
     fun onOpenLastActiveChapter(context: Context) {
         viewModelScope.launch {
             val lastReadChapter = getLastReadChapter()
                 ?: state.chapters.minByOrNull { it.chapter.position }?.chapter?.url
                 ?: return@launch
-
             openBookAtChapter(context, chapterUrl = lastReadChapter)
         }
     }

@@ -7,6 +7,8 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 object MizuList {
 
+
+
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()

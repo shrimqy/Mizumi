@@ -1,16 +1,36 @@
 package com.dokja.mizumi.data.network.models
 
-import androidx.annotation.Keep
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
-@Keep
+@JsonClass(generateAdapter = true)
+data class BookResponse(
+    @Json(name = "books")
+    val books: List<Book>
+)
+
+@JsonClass(generateAdapter = true)
 data class Book(
-    @SerializedName("id")
+    @Json(name = "Description")
+    val description: String?,
+    @Json(name = "authors")
+    val authors: String?,
+    @Json(name = "chapters")
+    val chapters: String?,
+    @Json(name = "coverUrl")
+    val coverUrl: String?,
+    @Json(name = "englishTitle")
+    val englishTitle: String?,
+    @Json(name = "firstPublished")
+    val firstPublished: String?,
+    @Json(name = "genres")
+    val genres: List<Genre>,
+    @Json(name = "id")
     val id: String,
-    @SerializedName("englishTitle")
-    val title: String,
-    @SerializedName("authors")
-    val authors: String,
-    @SerializedName("description")
-    val description: String,
+    @Json(name = "publicRating")
+    val publicRating: Int,
+    @Json(name = "ratingCount")
+    val ratingCount: Int?,
+    @Json(name = "romanizedTitle")
+    val romanizedTitle: String?
 )

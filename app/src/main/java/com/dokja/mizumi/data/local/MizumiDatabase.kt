@@ -11,6 +11,8 @@ import com.dokja.mizumi.data.local.chapter.ChapterBodyDao
 import com.dokja.mizumi.data.local.chapter.ChapterDao
 import com.dokja.mizumi.data.local.library.LibraryDao
 import com.dokja.mizumi.data.local.library.LibraryItem
+import com.dokja.mizumi.data.local.tracker.Track
+import com.dokja.mizumi.data.local.tracker.TrackerDao
 import com.dokja.mizumi.utils.Constants
 
 
@@ -25,14 +27,18 @@ interface AppDatabaseOperations {
     entities = [
         LibraryItem::class,
         Chapter::class,
-        ChapterBody::class],
-    version = 6,
+        ChapterBody::class,
+        Track::class],
+    version = 7,
     exportSchema = false
 ) abstract class MizumiDatabase : RoomDatabase(), AppDatabaseOperations {
     abstract fun getLibraryDao(): LibraryDao
     abstract fun getChapterDao(): ChapterDao
 
     abstract fun getChapterBody(): ChapterBodyDao
+    abstract fun getTrackerDao(): TrackerDao
+
+
     override suspend fun <T> transaction(block: suspend () -> T): T = withTransaction(block)
     companion object {
         @Volatile

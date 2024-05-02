@@ -38,6 +38,8 @@ data class ReaderPreferences(
     val readerTTSVoiceSpeed: Float,
     val readerTTSPitch: Float
 )
+
+
 class LocalUserManagerImpl(
     private val context: Context
 ): LocalUserManager {

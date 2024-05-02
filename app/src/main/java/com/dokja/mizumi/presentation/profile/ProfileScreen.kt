@@ -1,4 +1,4 @@
-package com.dokja.mizumi.presentation.Profile
+package com.dokja.mizumi.presentation.profile
 
 import androidx.compose.runtime.Composable
 

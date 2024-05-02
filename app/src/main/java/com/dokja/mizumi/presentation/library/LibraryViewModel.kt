@@ -30,12 +30,7 @@ class LibraryViewModel @Inject constructor(
         .toState(viewModelScope, listOf())
     fun getBook(bookUrl: String) = appRepository.libraryBooks.getFlow(bookUrl).filterNotNull()
 
-
-
-
 }
-
-
 
 fun <T> Flow<T>.toState(scope: CoroutineScope, initialValue: T): State<T> {
     val mutableState = mutableStateOf(initialValue)

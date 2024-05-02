@@ -7,7 +7,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.dokja.mizumi.data.ChapterWithContext
 import com.dokja.mizumi.data.local.library.LibraryItem
-import com.dokja.mizumi.data.manager.UserPreferences
+
 
 data class BookScreenState(
     val book: State<BookState>,

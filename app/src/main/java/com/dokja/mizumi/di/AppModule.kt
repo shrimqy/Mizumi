@@ -21,6 +21,7 @@ import com.dokja.mizumi.repository.AppRepository
 import com.dokja.mizumi.repository.BookChaptersRepository
 import com.dokja.mizumi.repository.ChapterBodyRepository
 import com.dokja.mizumi.repository.LibraryBookRepository
+import com.dokja.mizumi.repository.TrackerRepository
 import com.dokja.mizumi.utils.NotificationsCenter
 
 import dagger.Module
@@ -57,6 +58,7 @@ object AppModule {
         libraryBooksRepository: LibraryBookRepository,
         bookChaptersRepository: BookChaptersRepository,
         chapterBodyRepository: ChapterBodyRepository,
+        trackerRepository: TrackerRepository,
         appFileResolver: AppFileResolver,
     ): AppRepository {
         return AppRepository(
@@ -66,6 +68,7 @@ object AppModule {
             libraryBooksRepository,
             bookChaptersRepository,
             chapterBodyRepository,
+            trackerRepository,
             appFileResolver
         )
     }
@@ -88,6 +91,8 @@ object AppModule {
     @Provides
     fun provideLibraryDao(mizumiDatabase: MizumiDatabase) = mizumiDatabase.getLibraryDao()
 
+    @Provides
+    fun provideTrackerDao(mizumiDatabase: MizumiDatabase) = mizumiDatabase.getTrackerDao()
 
     @Provides
     @Singleton
@@ -164,6 +169,16 @@ object AppModule {
             chapterBodyDao = database.getChapterBody(),
             bookChaptersRepository = bookChaptersRepository,
             operations = database
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrackerRepository(
+        database: MizumiDatabase,
+    ): TrackerRepository {
+        return TrackerRepository(
+            trackerDao = database.getTrackerDao()
         )
     }
 

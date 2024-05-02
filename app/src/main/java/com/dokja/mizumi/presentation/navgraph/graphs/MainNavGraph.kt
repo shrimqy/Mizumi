@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.dokja.mizumi.presentation.Profile.ProfileScreen
+import com.dokja.mizumi.presentation.profile.ProfileScreen
 import com.dokja.mizumi.presentation.browse.BrowseScreen
 import com.dokja.mizumi.presentation.history.HistoryScreen
 import com.dokja.mizumi.presentation.library.LibraryScreen

@@ -19,7 +19,6 @@ class ViewModel @Inject constructor(
     fun login(username: String, password: String, onResult: (success: Boolean, token: String?) -> Unit) {
         val loginRequest = LoginRequest(username, password)
         viewModelScope.launch {
-            Log.d("Login", loginRequest.toString())
 
             val response = try {
                 api.login(loginRequest)
@@ -30,11 +29,9 @@ class ViewModel @Inject constructor(
                 return@launch
             }
 
-            if (response.token != "") {
-                val token = response.token
-                Log.d("Login", token)
-                localUserManager.saveUserToken(token)
-                onResult(true, token)
+            if (response != "") {
+                localUserManager.saveUserToken(response)
+                onResult(true, response)
             } else {
                 Log.e("Login", "Empty token received")
                 onResult(false, null)
