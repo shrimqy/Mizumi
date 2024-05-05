@@ -164,7 +164,7 @@ class BookViewModel @Inject constructor(
         }
     }
 
-    suspend fun insertTrack(bookId: String) {
+    suspend fun insertTrack(bookId: String, englishTitle: String?) {
         // Collect the latest value emitted by the flow
         val userId: String = userIdFlow.firstOrNull() ?: ""
         var userBook: UserBook?
@@ -200,21 +200,18 @@ class BookViewModel @Inject constructor(
 
                     val chapterNumber = potentialNumber?.toIntOrNull() ?: -1
 
-                    Log.d("lastReadChapter", "Chapter number: $chapterNumber")
-
-                    Log.d("lastRead", "$firstReadChapterFromBottomIndex")
-                    Log.d("lastRead", "$firstReadChapterFromBottom")
-
                     Track(
                         libraryId = libraryId.toInt(),
                         bookCategory = userBook!!.bookCategories[1].id,
                         bookId = bookId,
+                        title = englishTitle,
                         chaptersRead = chapterNumber.toString(),
                         userId = userId,
                         rating = userBook?.rating,
                         startedDate = userBook?.startedDate,
                         completedAt = userBook?.completedAt
                     ).let { appRepository.tracker.insertTrack(it) }
+
                 } else {
                     Log.d("IDSent", intArrayOf(1, 2).toString())
                     val userBookCreateRequest = UserBookCreateRequest(userId, bookId, intArrayOf(1, 2))

@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class Track(
     @PrimaryKey (autoGenerate = true)
     val id: Int = 0,
+    val title: String?,
     val libraryId: Int,
     val bookId: String,
     val bookCategory: Int,

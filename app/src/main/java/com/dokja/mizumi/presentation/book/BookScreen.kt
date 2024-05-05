@@ -63,6 +63,7 @@ import androidx.navigation.NavController
 import com.dokja.mizumi.R
 import com.dokja.mizumi.presentation.book.components.BookActionRow
 import com.dokja.mizumi.presentation.book.components.BookInfoHeader
+import com.dokja.mizumi.presentation.book.components.BookSearchSheet
 import com.dokja.mizumi.presentation.book.components.BookTrackerSheet
 import com.dokja.mizumi.presentation.book.components.ChapterHeader
 import com.dokja.mizumi.presentation.book.components.ChapterListItem
@@ -227,11 +228,15 @@ fun BookScreen(
                 sheetState = trackingSheetState,
                 modifier = Modifier.fillMaxSize(),
                 shape = BottomSheetDefaults.ExpandedShape,
-
                 onDismissRequest = { trackingSheet = false },
                 windowInsets = WindowInsets(0.dp),
             ) {
-                BookTrackerSheet(searchQuery = state.book.value.title)
+                if (tracker.value?.id == null) {
+                    BookSearchSheet(searchQuery = state.book.value.title)
+                } else {
+                    BookTrackerSheet(tracker = tracker)
+                }
+
             }
         }
 

@@ -303,7 +303,7 @@ private fun MangaSummary(
                     Text(
                         text = if (expanded) expandedDescription else shrunkDescription,
                         maxLines = Int.MAX_VALUE,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.secondaryItemAlpha(),
                     )
