@@ -6,6 +6,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -26,4 +27,7 @@ interface MizuListApi {
 
     @POST(Constants.USER_BOOK_BASE_URL)
     suspend fun createUserBook(@Body request: UserBookCreateRequest): UserBookCreateRequest?
+
+    @PUT(Constants.USER_BOOK_URL)
+    suspend fun updateUserBook(@Body request: UserBookUpdateRequest): UserBookUpdateRequest?
 }

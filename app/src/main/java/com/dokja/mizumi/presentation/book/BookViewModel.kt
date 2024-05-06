@@ -3,7 +3,6 @@ package com.dokja.mizumi.presentation.book
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +29,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
@@ -98,7 +99,14 @@ class BookViewModel @Inject constructor(
         selectedChaptersUrl = mutableStateMapOf(),
     )
 
-    var trackingDetails: MutableState<Track?> = mutableStateOf(null)
+    private val _trackingDetails = MutableStateFlow<Track?>(null)
+    val trackingDetails: StateFlow<Track?> = _trackingDetails.asStateFlow()
+
+    // Update trackingDetails using a dedicated function
+    fun updateTrackingDetails(newTrackingDetails: Track?) {
+        _trackingDetails.value = newTrackingDetails
+    }
+
 
     init {
         appScope.launch {
@@ -107,15 +115,15 @@ class BookViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            localUserManager.userBookPreferences().collect {
+            localUserManager.userBookPreferences().collectLatest {
                 _userPreferences.value = it
             }
         }
 
         viewModelScope.launch {
-            appRepository.tracker.getTrackByIdWithFlow(libraryId.toInt()).flowOn(Dispatchers.IO).collectLatest {
-                trackingDetails.value = it
-            }
+            appRepository.tracker.getTrackByIdWithFlow(libraryId.toInt())
+                .flowOn(Dispatchers.IO)
+                .collectLatest { _trackingDetails.value = it }
         }
 
 
@@ -258,8 +266,6 @@ class BookViewModel @Inject constructor(
         }
     }
 
-
-
     fun updateShowUnread(showUnread: Boolean) {
         viewModelScope.launch{
             localUserManager.updateUnread(showUnread)
@@ -271,7 +277,6 @@ class BookViewModel @Inject constructor(
             localUserManager.updateSort(sortOrder)
         }
     }
-
 
     private fun importUriContent() {
         if (loadChaptersJob?.isActive == true) return
@@ -287,8 +292,6 @@ class BookViewModel @Inject constructor(
             ).onError { state.error.value = it.message }
         }
     }
-
-
 }
 
 class StateExtraString(private val state: SavedStateHandle) {
@@ -298,39 +301,3 @@ class StateExtraString(private val state: SavedStateHandle) {
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) =
         state.set(property.name, value)
 }
-
-
-
-
-//fun removeCommonTextFromTitles(list: List<ChapterWithContext>): List<ChapterWithContext> {
-//    // Try removing repetitive title text from chapters
-//    if (list.size <= 1) return list
-//    val first = list.first().chapter.title
-//    val prefix =
-//        list.fold(first) { acc, e -> e.chapter.title?.commonPrefixWith(acc, ignoreCase = true) }
-//    val suffix =
-//        list.fold(first) { acc, e -> e.chapter.title?.commonSuffixWith(acc, ignoreCase = true) }
-//
-//    // Kotlin Std Lib doesn't have optional ignoreCase parameter for removeSurrounding
-//    fun String.removeSurrounding(
-//        prefix: CharSequence,
-//        suffix: CharSequence,
-//        ignoreCase: Boolean = false
-//    ): String {
-//        if ((length >= prefix.length + suffix.length) && startsWith(prefix, ignoreCase) && endsWith(
-//                suffix,
-//                ignoreCase
-//            )
-//        ) {
-//            return substring(prefix.length, length - suffix.length)
-//        }
-//        return this
-//    }
-//
-//    return list.map { data ->
-//        val newTitle = data
-//            .chapter.title.removeSurrounding(prefix, suffix, ignoreCase = true)
-//            .ifBlank { data.chapter.title }
-//        data.copy(chapter = data.chapter.copy(title = newTitle))
-//    }
-//}

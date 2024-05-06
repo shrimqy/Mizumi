@@ -1,7 +1,6 @@
 package com.dokja.mizumi.presentation.book
 
 import android.content.Intent
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -27,7 +26,6 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.SortByAlpha
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -88,8 +86,8 @@ fun BookScreen(
     val viewModel: BookViewModel = hiltViewModel()
     val state = viewModel.state
 
-    val tracker = viewModel.trackingDetails
-    Log.d("Track", "$tracker")
+    val tracker by viewModel.trackingDetails.collectAsState()
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     var showDropDown by rememberSaveable { mutableStateOf(false) }
     var showBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -101,11 +99,9 @@ fun BookScreen(
         onCloseSelectionBar()
     }
 
-    val userPreferences by viewModel.userPreferences.collectAsState()
-    var showUnread by rememberSaveable {
-        mutableStateOf(userPreferences.showUnread)
-    }
-    viewModel.updateShowUnread(showUnread)
+    val userPreferences by remember { viewModel.userPreferences }.collectAsState()
+    var showUnread = userPreferences.showUnread
+
 
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable {
@@ -117,12 +113,9 @@ fun BookScreen(
         mutableStateOf(false)
     }
 
-    //Custom topBarTitleColor
-    val topAppBarElementColor = if (scrollBehavior.state.overlappedFraction > 0) {
-        MaterialTheme.colorScheme.onBackground
-    } else {
-        Color.Transparent
-    }
+    //TopAppBar color logic
+    val topAppBarElementColor = MaterialTheme.colorScheme.onSurface.copy(alpha = scrollBehavior.state.overlappedFraction)
+
     Scaffold(
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -219,19 +212,22 @@ fun BookScreen(
                         inactiveIcon = { Icon(imageVector = Icons.Filled.SortByAlpha, null) },
                     )
                     Text(text = "Filters", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.padding(start = 15.dp))
-                    TriStateItem(label = stringResource(R.string.action_filter_unread), state = showUnread, onClick = { showUnread = !showUnread})
+                    TriStateItem(label = stringResource(R.string.action_filter_unread), state = showUnread, onClick = {
+                        showUnread = !showUnread
+                        viewModel.updateShowUnread(showUnread = showUnread)
+                    })
                 }
             }
         }
         if (trackingSheet) {
             ModalBottomSheet(
                 sheetState = trackingSheetState,
-                modifier = Modifier.fillMaxSize(),
-                shape = BottomSheetDefaults.ExpandedShape,
+                modifier = Modifier,
+//                shape = BottomSheetDefaults.ExpandedShape,
                 onDismissRequest = { trackingSheet = false },
                 windowInsets = WindowInsets(0.dp),
             ) {
-                if (tracker.value?.id == null) {
+                if (tracker?.id == null) {
                     BookSearchSheet(searchQuery = state.book.value.title)
                 } else {
                     BookTrackerSheet(tracker = tracker)
@@ -271,7 +267,7 @@ fun BookScreen(
                 ) {
                     BookActionRow(
                         inLibrary = state.book.value.inLibrary,
-                        trackingStatus = tracker.value?.id != null,
+                        trackingStatus = tracker?.id != null,
                         onAddToLibraryClicked = viewModel::libraryUpdate,
                         onTrackingClicked = {
                             trackingSheet = true

@@ -48,3 +48,30 @@ data class UserBookCreateRequest(
         return bookCategoryIds.contentHashCode()
     }
 }
+
+@JsonClass(generateAdapter = true)
+data class UserBookUpdateRequest(
+    @Json(name = "userID")
+    var userId: String,
+    @Json(name = "bookID")
+    var bookID: String,
+    @Json(name = "bookCategoryIds")
+    var bookCategoryIds: IntArray,
+    @Json(name = "rating")
+    var rating: String?,
+    @Json(name = "chaptersRead")
+    var chaptersRead: String?,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as UserBookCreateRequest
+
+        return bookCategoryIds.contentEquals(other.bookCategoryIds)
+    }
+
+    override fun hashCode(): Int {
+        return bookCategoryIds.contentHashCode()
+    }
+}
