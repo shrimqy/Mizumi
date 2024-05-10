@@ -18,7 +18,9 @@ interface TrackerDao {
     @Query("SELECT * FROM Track WHERE Track.libraryId == :libraryId")
     fun getTrackByIdWithFlow(libraryId: Int): Flow<Track>
 
-    @Query("UPDATE Track SET bookCategory = :bookCategory, chaptersRead = :chaptersRead, rating = :rating WHERE libraryId == :libraryId ")
-    suspend fun updateStatus(libraryId: Int, bookCategory: Int, chaptersRead: String?, rating: String?)
+    @Query("UPDATE Track SET bookCategory = :bookCategory, chaptersRead = :chaptersRead, rating = :rating, startedDate = :startedDate, completedAt = :completedAt WHERE libraryId == :libraryId ")
+    suspend fun updateStatus(libraryId: Int, bookCategory: Int, chaptersRead: String?, rating: String?, startedDate: String?, completedAt: String?)
 
+    @Query("UPDATE Track SET bookCategory = :bookCategory, chaptersRead = :chaptersRead WHERE libraryId == :libraryId ")
+    suspend fun updateChapterRead(libraryId: Int, bookCategory: Int, chaptersRead: String?)
 }

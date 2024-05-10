@@ -80,15 +80,14 @@ fun BookTrackerSheet(
             .animateContentSize()
     ) {
         if (tracker!=null) {
-            fun getTrackerStatusString(categoryId: Int): Int {
+            fun getTrackerStatusString(categoryId: Int?): Int? {
                 return when (categoryId) {
-                    1 -> R.string.reading // Reading
-                    2 -> R.string.completed // Completed
-                    3 -> R.string.dropped // Dropped
-                    4 -> R.string.on_hold // On hold
-                    5 -> R.string.paused // Paused
-                    6 -> R.string.plan_to_read // Plan to read
-                    else -> throw IllegalArgumentException("Invalid category ID: $categoryId")
+                    2 -> R.string.reading // Reading
+                    3 -> R.string.plan_to_read // Plan to read
+                    4 -> R.string.paused // Paused
+                    5 -> R.string.dropped // Dropped
+                    6 -> R.string.completed // Completed
+                    else -> null // Return null for other categories (optional)
                 }
             }
 
@@ -126,11 +125,7 @@ fun BookTrackerSheet(
                         Row(modifier = Modifier.height(IntrinsicSize.Min)) {
                             TrackDetailsItem(
                                 modifier = Modifier.weight(1f),
-                                text = tracker.bookCategory?.let {
-                                    stringResource(
-                                        getTrackerStatusString(tracker.bookCategory)
-                                    )
-                                } ?: "",
+                                text = getTrackerStatusString(tracker.bookCategory)?.let { stringResource(it) } ?: "",
                                 onClick = { /*  Status Click */ },
                             )
                             VerticalDivider()
@@ -151,24 +146,23 @@ fun BookTrackerSheet(
                             }
                         }
 
-                        if (!showCompletedDate && !showStartedDate) {
-                            HorizontalDivider()
-                            Row(modifier = Modifier.height(IntrinsicSize.Min)) {
-                                TrackDetailsItem(
-                                    modifier = Modifier.weight(1F),
-                                    text = tracker.startedDate,
-                                    placeholder = stringResource(R.string.track_started_reading_date),
-                                    onClick = { showStartedDate = true },
-                                )
-                                VerticalDivider()
-                                TrackDetailsItem(
-                                    modifier = Modifier.weight(1F),
-                                    text = tracker.completedAt,
-                                    placeholder = stringResource(R.string.track_finished_reading_date),
-                                    onClick = { showCompletedDate = true },
-                                )
-                            }
+                        HorizontalDivider()
+                        Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+                            TrackDetailsItem(
+                                modifier = Modifier.weight(1F),
+                                text = tracker.startedDate,
+                                placeholder = stringResource(R.string.track_started_reading_date),
+                                onClick = { showStartedDate = true },
+                            )
+                            VerticalDivider()
+                            TrackDetailsItem(
+                                modifier = Modifier.weight(1F),
+                                text = tracker.completedAt,
+                                placeholder = stringResource(R.string.track_finished_reading_date),
+                                onClick = { showCompletedDate = true },
+                            )
                         }
+
                     }
                 }
             }

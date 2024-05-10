@@ -61,16 +61,17 @@ data class UserBookUpdateRequest(
     var rating: String?,
     @Json(name = "chaptersRead")
     var chaptersRead: String?,
+    @Json(name = "startedDate")
+    var startedDate: String?,
+    @Json(name = "completedAt")
+    var completedAt: String?,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-
         other as UserBookCreateRequest
-
         return bookCategoryIds.contentEquals(other.bookCategoryIds)
     }
-
     override fun hashCode(): Int {
         return bookCategoryIds.contentHashCode()
     }

@@ -106,6 +106,8 @@ class BookViewModel @Inject constructor(
     fun updateTrackingDetails(newTrackingDetails: Track?) {
         _trackingDetails.value = newTrackingDetails
     }
+    val userIdFlow: Flow<String?> = localUserManager.readUserToken()
+
 
 
     init {
@@ -148,10 +150,40 @@ class BookViewModel @Inject constructor(
                     state.chapters.addAll(it)
                 }
         }
+
+        viewModelScope.launch {
+            try {
+                val userId: String = userIdFlow.firstOrNull() ?: ""
+                val response = api.fetchUserBook(userId, trackingDetails.value!!.bookId)
+                Log.d("DBResponse", "$response")
+                val userBooks = response?.userBooks
+
+                // Extract the UserBook object if it exists
+                val userBook: UserBook? = userBooks
+
+                // Calculate lastReadChapter from local chapters
+                val lastChapterRead = getLastReadChapterNumber()
+
+                if (userBook != null) {
+                    val chaptersRead = lastChapterRead?.let {
+                        userBook.chaptersRead?.toInt()?.coerceAtLeast(
+                            it
+                        )
+                    }
+                    appRepository.tracker.updateStatus(
+                        bookCategory = userBook.bookCategories[1].id,
+                        rating = userBook.rating,
+                        chaptersRead = chaptersRead.toString(),
+                        libraryId = libraryId.toInt(),
+                        startedDate = userBook.startedDate,
+                        completedAt = userBook.completedAt
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("SearchResult", "Error occurred: ${e.message}", e)
+            }
+        }
     }
-
-    val userIdFlow: Flow<String?> = localUserManager.readUserToken()
-
 
     val searchResults = MutableStateFlow<List<Book>?>(null)
     fun search(englishTitle: String) {
@@ -189,31 +221,12 @@ class BookViewModel @Inject constructor(
                 // Now you can use the userBook object as needed
                 Log.d("UserBook", "$userBook")
                 if (userBook != null) {
-                    val chapters = state.chapters
-
-                    // Iterate through the chapters list in reverse order
-                    val firstReadChapterFromBottom = chapters.reversed().firstOrNull { it.chapter.read }
-
-                    // If a read chapter is found, return it, otherwise return null
-                    val firstReadChapterFromBottomIndex = if (firstReadChapterFromBottom != null) {
-                        chapters.indexOf(firstReadChapterFromBottom) + 1
-                    } else {
-                        -1
-                    }
-
-                    val chapterTitle = firstReadChapterFromBottom?.chapter?.title
-
-                    val splitTitle = chapterTitle?.split(" ") // Split on whitespace
-                    val potentialNumber = splitTitle?.firstOrNull { it.matches(Regex("\\d+")) }
-
-                    val chapterNumber = potentialNumber?.toIntOrNull() ?: -1
-
                     Track(
                         libraryId = libraryId.toInt(),
                         bookCategory = userBook!!.bookCategories[1].id,
                         bookId = bookId,
                         title = englishTitle,
-                        chaptersRead = chapterNumber.toString(),
+                        chaptersRead = getLastReadChapterNumber().toString(),
                         userId = userId,
                         rating = userBook?.rating,
                         startedDate = userBook?.startedDate,
@@ -237,6 +250,18 @@ class BookViewModel @Inject constructor(
         return appRepository.libraryBooks.get(bookUrl)?.lastReadChapter
             ?: appRepository.bookChapters.getFirstChapter(bookUrl)?.url
     }
+
+    private suspend fun getLastReadChapterNumber(): Int? {
+        val chapterUrl = getLastReadChapter()
+        val chapterTitle = chapterUrl?.let { appRepository.bookChapters.get(it)?.title }
+        return if (chapterTitle != null) {
+            val splitTitle = chapterTitle.split(" ") // Split on whitespace
+            val potentialNumber = splitTitle.firstOrNull { it.matches(Regex("\\d+")) }
+            val chapterNumber = potentialNumber?.toIntOrNull() ?: -1
+            chapterNumber
+        } else null
+    }
+
 
     fun onOpenLastActiveChapter(context: Context) {
         viewModelScope.launch {

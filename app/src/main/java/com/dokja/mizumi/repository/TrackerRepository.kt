@@ -12,5 +12,7 @@ class TrackerRepository(
 
     fun getTrackByIdWithFlow(libraryId: Int) = trackerDao.getTrackByIdWithFlow(libraryId)
 
-    suspend fun updateStatus(libraryId: Int, bookCategory: Int, chaptersRead: String?, rating: String?) = trackerDao.updateStatus(libraryId, bookCategory, chaptersRead, rating)
+    suspend fun updateStatus(libraryId: Int, bookCategory: Int, chaptersRead: String?, rating: String?, startedDate: String?, completedAt: String?) = trackerDao.updateStatus(libraryId, bookCategory, chaptersRead, rating, completedAt, startedDate)
+
+    suspend fun updateChapterRead(libraryId: Int, bookCategory: Int, chaptersRead: String?) = trackerDao.updateChapterRead(libraryId, bookCategory, chaptersRead)
 }

@@ -59,6 +59,11 @@ class ReaderViewModel @Inject constructor(
     val readerPreferences: MutableStateFlow<ReaderPreferences> = _readerPreferences
 
 
+
+    fun updateTracker() {
+        val userId = localUserManager.readUserToken()
+    }
+
     val state = ReaderScreenState(
         showReaderInfo = mutableStateOf(false),
         readerInfo = ReaderScreenState.CurrentInfo(

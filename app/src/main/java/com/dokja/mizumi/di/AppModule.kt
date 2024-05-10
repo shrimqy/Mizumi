@@ -196,13 +196,15 @@ object AppModule {
         appRepository: AppRepository,
         appCoroutineScope: AppCoroutineScope,
         @ApplicationContext context: Context,
-        localUserManager: LocalUserManager
+        localUserManager: LocalUserManager,
+        api: MizuListApi
     ): ReaderManager {
         return ReaderManager(
             appRepository,
             context,
             appScope = appCoroutineScope,
-            localUserManager = localUserManager
+            localUserManager = localUserManager,
+            api = api
         )
     }
 }

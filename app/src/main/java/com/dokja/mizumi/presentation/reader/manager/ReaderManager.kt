@@ -1,6 +1,7 @@
 package com.dokja.mizumi.presentation.reader.manager
 
 import android.content.Context
+import com.dokja.mizumi.data.network.MizuListApi
 import com.dokja.mizumi.di.AppCoroutineScope
 import com.dokja.mizumi.domain.manager.LocalUserManager
 import com.dokja.mizumi.presentation.reader.components.InitialPositionChapter
@@ -28,7 +29,8 @@ class ReaderManager @Inject constructor(
     private val scope: CoroutineScope = CoroutineScope(
         SupervisorJob() + Dispatchers.Default + CoroutineName("ReaderManager")
     ),
-    val localUserManager: LocalUserManager
+    val localUserManager: LocalUserManager,
+    val api: MizuListApi
 ) : ReaderManagerViewCallReferences {
     var session: ReaderSession? = null
         private set
@@ -80,7 +82,8 @@ class ReaderManager @Inject constructor(
             setInitialPosition = { withMainNow { setInitialPosition?.invoke(it) } },
             showInvalidChapterDialog = { withMainNow { showInvalidChapterDialog?.invoke() } },
             context = context,
-            localUserManager = localUserManager
+            localUserManager = localUserManager,
+            api = api
         )
         session = newSession
         newSession.init()

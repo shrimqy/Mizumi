@@ -5,6 +5,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import com.dokja.mizumi.data.local.chapter.Chapter
 import com.dokja.mizumi.data.manager.ReaderPreferences
+import com.dokja.mizumi.data.network.MizuListApi
 import com.dokja.mizumi.di.AppCoroutineScope
 import com.dokja.mizumi.domain.manager.LocalUserManager
 import com.dokja.mizumi.presentation.reader.ChapterState
@@ -45,10 +46,10 @@ class ReaderSession @Inject constructor(
     val setInitialPosition: suspend (InitialPositionChapter) -> Unit,
     val showInvalidChapterDialog: suspend () -> Unit,
     private val localUserManager: LocalUserManager,
+    private val api: MizuListApi,
 ) {
     private var chapterUrl: String = initialChapterUrl
-
-    private val readRoutine = ChaptersIsReadRoutine(appRepository)
+    private val readRoutine = ChaptersIsReadRoutine(appRepository, api)
     private val orderedChapters = mutableListOf<Chapter>()
 
     var bookTitle: String? = null

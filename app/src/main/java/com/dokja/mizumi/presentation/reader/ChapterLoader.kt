@@ -1,6 +1,5 @@
 package com.dokja.mizumi.presentation.reader
 
-import android.util.Log
 import com.dokja.mizumi.data.Response
 import com.dokja.mizumi.data.local.chapter.Chapter
 import com.dokja.mizumi.presentation.reader.components.InitialPositionChapter
@@ -456,7 +455,6 @@ class ReaderChaptersLoader(
                     text = res.data,
                 )
                 chapterItemPosition += itemsOriginal.size
-                Log.w("Text", res.data)
 
 //                val itemTranslationAttribution = if (translatorIsActive()) {
 //                    ReaderItem.GoogleTranslateAttribution(chapterIndex = chapterIndex)

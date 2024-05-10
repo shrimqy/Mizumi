@@ -29,5 +29,9 @@ interface MizuListApi {
     suspend fun createUserBook(@Body request: UserBookCreateRequest): UserBookCreateRequest?
 
     @PUT(Constants.USER_BOOK_URL)
-    suspend fun updateUserBook(@Body request: UserBookUpdateRequest): UserBookUpdateRequest?
+    suspend fun updateUserBook(
+        @Path("userID") userID: String,
+        @Path("bookID") bookID: String,
+        @Body request: UserBookUpdateRequest
+    ): String?
 }
