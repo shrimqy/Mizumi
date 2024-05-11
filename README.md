@@ -1,13 +1,10 @@
-# Mizumi
+# ![app icon](./.github/readme-images/app-icon.png) Mizumi
 
 An Android Epub Reader inspired by Tachiyomi/Mihon to provide a fair reading experience. 
 It is an extension to my other project [MizuList](https://github.com/shrimpyvongue/MizuList).
 (This branch will be discontinued/paused for the foreseeable future.)
 
-![screenshots of app](./.github/readme-images/Onboarding%20Screen.jpg)
-![screenshots of app](./.github/readme-images/Library%20Screen.jpg)
-![screenshots of app](./.github/readme-images/Book%20Screen.jpg)
-![screenshots of app](./.github/readme-images/Reader%20Screen.jpg)
+![screenshots of app](./.github/readme-images/screens.png)
 
 ## Features
  - Local source to read local EPUBs
