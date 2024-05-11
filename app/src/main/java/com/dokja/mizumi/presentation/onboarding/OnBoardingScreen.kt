@@ -30,7 +30,6 @@ import com.dokja.mizumi.presentation.Dimens.MediumPadding2
 import com.dokja.mizumi.presentation.common.material.OnTextButton
 import com.dokja.mizumi.presentation.common.material.OnboardButton
 import com.dokja.mizumi.presentation.common.material.PageIndicator
-import com.dokja.mizumi.presentation.navgraph.AuthScreenGraph
 import com.dokja.mizumi.presentation.onboarding.components.OnBoardingPage
 import kotlinx.coroutines.launch
 
@@ -65,9 +64,8 @@ fun OnBoardingScreen(
             val buttonState = remember {
                 derivedStateOf {
                     when(pagerState.currentPage) {
-                        0 -> listOf("", "GET STARTED")
+                        0 -> listOf("Skip", "GET STARTED")
                         1 -> listOf("", "I UNDERSTAND")
-                        2 -> listOf("Skip", "LOGIN")
                         else -> listOf("", "")
                     }
                 }
@@ -99,7 +97,7 @@ fun OnBoardingScreen(
                             text = buttonState.value[0],
                             onClick = {
                                 scope.launch {
-                                    if (pagerState.currentPage == 2) {
+                                    if (pagerState.currentPage == 0) {
                                         notificationPermissionResultLauncher.launch(
                                             Manifest.permission.POST_NOTIFICATIONS
                                         )
@@ -117,8 +115,11 @@ fun OnBoardingScreen(
                         text = buttonState.value[1],
                         onClick = {
                             scope.launch {
-                                if (pagerState.currentPage == 2) {
-                                    rootNavController.navigate(AuthScreenGraph.Login.route)
+                                if (pagerState.currentPage == 1) {
+//                                    rootNavController.navigate(AuthScreenGraph.Login.route)
+                                    notificationPermissionResultLauncher.launch(
+                                        Manifest.permission.POST_NOTIFICATIONS
+                                    )
                                 }else{
                                     pagerState.animateScrollToPage(
                                         page = pagerState.currentPage + 1
