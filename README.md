@@ -1,4 +1,4 @@
-# ![app icon]<img src="./.github/readme-images/app-icon.png" alt="app icon" width="100"> Mizumi
+# ![app icon](./.github/readme-images/app-icon.png) Mizumi
 
 An Android Epub Reader inspired by Tachiyomi/Mihon to provide a fair reading experience. 
 It is an extension to my other project [MizuList](https://github.com/shrimpyvongue/MizuList).
