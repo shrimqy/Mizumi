@@ -1,29 +1,33 @@
 package com.dokja.mizumi.presentation.onboarding
 
 import androidx.annotation.DrawableRes
+import androidx.compose.runtime.Composable
 import com.dokja.mizumi.R
 
 
 data class Page(
-    val title: String,
-    val description: String,
-    @DrawableRes val image: Int?
+    val title: String?,
+    val description: String?,
+    @DrawableRes val image: Int?,
+    val content: @Composable () -> Unit = {}
 )
 
 val pages = listOf(
     Page(
-        title = "WELCOME",
-        description = "This is a FOSS Android application to read, track and browse Books/Novels.",
-        image = null
+        title = "Welcome!",
+        description = "Let's set some things up first.",
+        image = R.drawable.ic_logo,
     ),
     Page(
         title = "Disclaimer",
         description = "Our Reader does not endorse or support access to copyrighted content. Please use authorized platforms to obtain content for viewing and respect copyright laws.",
         image = R.drawable.disclaimer
     ),
-//    Page(
-//        title = "Connect to Multiple Trackers",
-//        description = "Browse through the catalog and explore new worlds to enjoy. Maintain and track your lists connecting to our site. Stay in the loop of new stuff as they come.",
-//        image = R.drawable.ic_logo
-//    )
+    Page(
+        title = null,
+        description = null,
+        image = null,
+        content = { StorageContent() }
+    ),
+
 )

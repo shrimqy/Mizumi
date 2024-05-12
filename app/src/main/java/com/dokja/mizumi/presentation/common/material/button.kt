@@ -7,7 +7,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
@@ -17,18 +16,17 @@ fun OnboardButton(
     text: String,
     onClick:() -> Unit
 ) {
-    
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = Color.White
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ),
         shape = RoundedCornerShape(size = 6.dp)
         ) {
             Text(
                 text = text,
-                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold))
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
     }
 }
 
@@ -41,7 +39,7 @@ fun OnTextButton(
         Text(
             text = text,
             style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
-            color = Color.White
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }

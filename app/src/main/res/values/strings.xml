@@ -95,4 +95,8 @@
     <string name="track_status">Status</string>
     <string name="track_started_reading_date">Start date</string>
     <string name="track_finished_reading_date">Finish date</string>
+    <string name="file_picker_error">Error Picking Storage\n</string>
+    <string name="onboarding_storage_info">Select a folder where %1$s will store chapter downloads, backups, and more.\n\nA dedicated folder is recommended.</string>
+    <string name="onboarding_storage_action_select">Select a folder</string>
+    <string name="onboarding_storage_selection_required">A folder must be selected</string>
 </resources>

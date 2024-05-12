@@ -17,6 +17,12 @@ val Poppins = FontFamily(
     )
 )
 
+//val Helvetica = FontFamily(
+//    fonts = listOf(
+//        Font(R.font.)
+//    )
+//)
+
 // Set of Material typography styles to start with
 // body is "Text" in the Figma Design
 // label small is xsmall in Figma Design

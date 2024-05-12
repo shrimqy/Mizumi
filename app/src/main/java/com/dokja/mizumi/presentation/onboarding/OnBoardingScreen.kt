@@ -49,14 +49,17 @@ fun OnBoardingScreen(
                 onEvent(OnBoardingEvent.SaveAppEntry)
         }
     )
+
     Box(
-        modifier = Modifier.fillMaxSize(),
-        Alignment.Center
+        modifier = Modifier
+            .fillMaxSize(),
+
+        Alignment.BottomCenter,
+
         ) {
         Column (
-            modifier = Modifier
-                .fillMaxSize(),
-                Arrangement.Bottom
+            modifier = Modifier,
+            Arrangement.Bottom,
         ){
             val pagerState = rememberPagerState(initialPage = 0) {
                 pages.size
@@ -64,8 +67,9 @@ fun OnBoardingScreen(
             val buttonState = remember {
                 derivedStateOf {
                     when(pagerState.currentPage) {
-                        0 -> listOf("Skip", "GET STARTED")
-                        1 -> listOf("", "I UNDERSTAND")
+                        0 -> listOf("", "Get Started")
+                        1 -> listOf("", "I Understand")
+                        2 -> listOf("", "Next")
                         else -> listOf("", "")
                     }
                 }
@@ -74,7 +78,7 @@ fun OnBoardingScreen(
                 OnBoardingPage(page = pages[index])
             }
 
-        Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(50.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -115,7 +119,7 @@ fun OnBoardingScreen(
                         text = buttonState.value[1],
                         onClick = {
                             scope.launch {
-                                if (pagerState.currentPage == 1) {
+                                if (pagerState.currentPage == 2) {
 //                                    rootNavController.navigate(AuthScreenGraph.Login.route)
                                     notificationPermissionResultLauncher.launch(
                                         Manifest.permission.POST_NOTIFICATIONS

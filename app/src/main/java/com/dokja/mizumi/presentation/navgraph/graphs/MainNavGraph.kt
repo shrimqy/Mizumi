@@ -7,10 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.dokja.mizumi.presentation.profile.ProfileScreen
 import com.dokja.mizumi.presentation.browse.BrowseScreen
 import com.dokja.mizumi.presentation.history.HistoryScreen
 import com.dokja.mizumi.presentation.library.LibraryScreen
+import com.dokja.mizumi.presentation.more.MoreScreen
 import com.dokja.mizumi.presentation.navgraph.Graph
 import com.dokja.mizumi.presentation.navgraph.MainRouteScreen
 
@@ -40,7 +40,7 @@ fun MainNavGraph(
             BrowseScreen()
         }
         composable(route = MainRouteScreen.Profile.route) {
-            ProfileScreen()
+            MoreScreen()
         }
     }
 }
