@@ -1,4 +1,4 @@
-package com.dokja.mizumi.presentation.onboarding
+package com.dokja.mizumi.presentation.more.onboarding
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable

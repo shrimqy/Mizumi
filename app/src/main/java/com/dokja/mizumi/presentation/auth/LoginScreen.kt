@@ -30,7 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dokja.mizumi.R
 import com.dokja.mizumi.presentation.navgraph.AuthScreenGraph
-import com.dokja.mizumi.presentation.onboarding.OnBoardingEvent
+import com.dokja.mizumi.presentation.more.onboarding.OnBoardingEvent
 
 @Composable
 fun LoginScreen(

@@ -1,4 +1,4 @@
-package com.dokja.mizumi.presentation.onboarding
+package com.dokja.mizumi.presentation.more.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

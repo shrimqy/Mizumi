@@ -10,7 +10,7 @@ import com.dokja.mizumi.presentation.auth.LoginScreen
 import com.dokja.mizumi.presentation.auth.RegisterScreen
 import com.dokja.mizumi.presentation.navgraph.AuthScreenGraph
 import com.dokja.mizumi.presentation.navgraph.Graph
-import com.dokja.mizumi.presentation.onboarding.OnBoardingViewModel
+import com.dokja.mizumi.presentation.more.onboarding.OnBoardingViewModel
 
 fun NavGraphBuilder.authNavGraph(rootNavController: NavHostController) {
     navigation(

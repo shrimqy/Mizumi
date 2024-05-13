@@ -1,9 +1,11 @@
-package com.dokja.mizumi.presentation.onboarding
+package com.dokja.mizumi.presentation.more.onboarding
 
 
 import android.Manifest
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,9 +32,10 @@ import com.dokja.mizumi.presentation.Dimens.MediumPadding2
 import com.dokja.mizumi.presentation.common.material.OnTextButton
 import com.dokja.mizumi.presentation.common.material.OnboardButton
 import com.dokja.mizumi.presentation.common.material.PageIndicator
-import com.dokja.mizumi.presentation.onboarding.components.OnBoardingPage
+import com.dokja.mizumi.presentation.more.onboarding.components.OnBoardingPage
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnBoardingScreen(
@@ -53,9 +56,7 @@ fun OnBoardingScreen(
     Box(
         modifier = Modifier
             .fillMaxSize(),
-
         Alignment.BottomCenter,
-
         ) {
         Column (
             modifier = Modifier,
@@ -92,10 +93,8 @@ fun OnBoardingScreen(
                     pageSize = pages.size,
                     selectedPage = pagerState.currentPage
                 )
-
                 Row(verticalAlignment = Alignment.CenterVertically){
                     val scope = rememberCoroutineScope()
-
                     if (buttonState.value[0].isNotEmpty()) {
                         OnTextButton(
                             text = buttonState.value[0],

@@ -1,61 +1,13 @@
 package com.dokja.mizumi.epub
 
-import android.graphics.BitmapFactory
-import android.util.Log
+import com.dokja.mizumi.epub.EpubBook.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
-import org.jsoup.nodes.TextNode
 import java.io.File
 import java.io.InputStream
 import java.util.zip.ZipInputStream
 import kotlin.io.path.invariantSeparatorsPathString
-
-//Models
-data class EpubChapter(
-    val absPath: String,
-    val title: String?,
-    val body: String
-)
-
-
-data class EpubBook(
-    val fileName: String,
-    val title: String,
-    val author: String?,
-    val description: String?,
-    val coverImage: EpubImage?,
-    val chapters: List<EpubChapter>,
-    val images: List<EpubImage>,
-    val toc: List<ToCEntry> = emptyList()
-)
-data class EpubImage(val absPath: String, val image: ByteArray) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as EpubImage
-
-        if (absPath != other.absPath) return false
-        return image.contentEquals(other.image)
-    }
-
-    override fun hashCode(): Int {
-        var result = absPath.hashCode()
-        result = 31 * result + image.contentHashCode()
-        return result
-    }
-}
-
-data class EpubManifestItem(
-    val id: String, val absPath: String, val mediaType: String, val properties: String
-)
-
-
-data class ToCEntry(
-    val chapterTitle: String,
-    val chapterLink: String)
-
 
 
 data class EpubFile(val absPath: String, val data: ByteArray) {
@@ -142,7 +94,7 @@ suspend fun epubParser(
         .removePrefix("/")
 
     val manifestItems = manifest.selectChildTag("item").map {
-        EpubManifestItem(
+        ManifestItem(
             id = it.getAttribute("id"),
             absPath = it.getAttribute("href").decodedURL.hrefAbsolutePath(),
             mediaType = it.getAttribute("media-type"),
@@ -152,7 +104,7 @@ suspend fun epubParser(
 
 
 
-    fun parseCoverImageFromXhtml(coverFile: EpubFile): EpubImage? {
+    fun parseCoverImageFromXhtml(coverFile: EpubFile): EpubBook.Image? {
         val doc = Jsoup.parse(coverFile.data.inputStream(), "UTF-8", "")
         // Find the <img> tag within the XHTML file (adjust the selector if needed)
         val imgTag = doc.selectFirst("img")
@@ -167,7 +119,7 @@ suspend fun epubParser(
 
 
             if (imgFile != null) {
-                return EpubImage(absPath = imgFile.absPath, image = imgFile.data)
+                return Image(absPath = imgFile.absPath, image = imgFile.data)
             }
         }
         return null // Cover image not found in the XHTML
@@ -176,7 +128,7 @@ suspend fun epubParser(
     // 1. Primary Method: Try to get the cover image from the manifest
     var coverImage = manifestItems[metadataCoverId]
         ?.let { files[it.absPath] }
-        ?.let { EpubImage(absPath = it.absPath, image = it.data) }
+        ?.let { Image(absPath = it.absPath, image = it.data) }
 
     // 2. Fallback: Check the `<guide>` tag if the primary method didn't yield a cover
     if (coverImage == null) {
@@ -214,7 +166,7 @@ suspend fun epubParser(
     }
 
     // Function to check if a spine item is a chapter
-    fun isChapter(item: EpubManifestItem): Boolean {
+    fun isChapter(item: ManifestItem): Boolean {
         val extension = item.absPath.substringAfterLast('.')
         return listOf("xhtml", "xml", "html").contains(extension)
     }
@@ -229,7 +181,7 @@ suspend fun epubParser(
     }
 
     // Iterate through spine items
-    val chapters = mutableListOf<EpubChapter>()
+    val chapters = mutableListOf<Chapter>()
     var currentChapterIndex = 0
     var currentChapterBody = ""
 
@@ -253,10 +205,10 @@ suspend fun epubParser(
             if (tocEntry != null) {
                 if(spineItem.mediaType.startsWith("image/")) {
 
-                    chapters.add(EpubChapter("image_${spineItem.absPath}", null, parser.parseAsImage(spineItem.absPath)))
+                    chapters.add(Chapter("image_${spineItem.absPath}", null, parser.parseAsImage(spineItem.absPath)))
                 }
                 else if (currentChapterBody.isNotEmpty()) {
-                    chapters.add(EpubChapter(chapterUrl, tocEntry.chapterTitle, currentChapterBody))
+                    chapters.add(Chapter(chapterUrl, tocEntry.chapterTitle, currentChapterBody))
                     currentChapterBody = ""
                 }
                 currentChapterIndex++
@@ -269,7 +221,7 @@ suspend fun epubParser(
     if (lastSpineItem != null && isChapter(lastSpineItem)) {
         val lastChapterUrl = lastSpineItem.absPath
         val lastChapterTitle = if (tocEntries.last().chapterLink == lastChapterUrl) tocEntries.last().chapterTitle else "Chapter ${currentChapterIndex + 1}"
-        chapters.add(EpubChapter(lastChapterUrl, lastChapterTitle, currentChapterBody))
+        chapters.add(Chapter(lastChapterUrl, lastChapterTitle, currentChapterBody))
     }
 
 
@@ -281,14 +233,14 @@ suspend fun epubParser(
             imageExtensions.any { file.absPath.endsWith(it, ignoreCase = true) }
         }
         .map { (_, file) ->
-            EpubImage(absPath = file.absPath, image = file.data)
+            Image(absPath = file.absPath, image = file.data)
         }
 
     val listedImages = manifestItems.asSequence()
         .map { it.value }
         .filter { it.mediaType.startsWith("image") }
         .mapNotNull { files[it.absPath] }
-        .map { EpubImage(absPath = it.absPath, image = it.data) }
+        .map { Image(absPath = it.absPath, image = it.data) }
 
     val images = (listedImages + unlistedImages).distinctBy { it.absPath }
 
@@ -304,167 +256,3 @@ suspend fun epubParser(
     )
 }
 
-class EpubXMLFileParser(
-    fileAbsolutePath: String,
-    val data: ByteArray,
-    private val zipFile: Map<String, EpubFile>
-) {
-    data class Output(val body: String, val title: String?)
-
-    private val fileParentFolder: File = File(fileAbsolutePath).parentFile ?: File("")
-
-    fun parseAsDocument(): Output {
-        val body = Jsoup.parse(data.inputStream(), "UTF-8", "").body()
-        Log.d("body","$body")
-        val chapterTitle = body.selectFirst("h1, h2, h3, h4, h5, h6")?.text()
-        body.selectFirst("h1, h2, h3, h4, h5, h6")?.remove()
-
-        return Output(
-            title = chapterTitle,
-            body = getNodeStructuredText(body)
-        )
-    }
-
-
-    fun parseAsImage(absolutePathImage: String): String {
-        // Use run catching so it can be run locally without crash
-        val bitmap = zipFile[absolutePathImage]?.data?.runCatching {
-            BitmapFactory.decodeByteArray(this, 0, this.size)
-        }?.getOrNull()
-
-        val text = BookTextMapper.ImgEntry(
-            path = absolutePathImage,
-            yrel = bitmap?.let { it.height.toFloat() / it.width.toFloat() } ?: 1.45f
-        ).toXMLString()
-
-        return "\n\n$text\n\n"
-    }
-
-    // Rewrites the image node to xml for the next stage.
-    private fun declareImgEntry(node: org.jsoup.nodes.Node): String {
-        val attrs = node.attributes().associate { it.key to it.value }
-        val relPathEncoded = attrs["src"] ?: attrs["xlink:href"] ?: ""
-
-        val absolutePathImage = File(fileParentFolder, relPathEncoded.decodedURL)
-            .canonicalFile
-            .toPath()
-            .invariantSeparatorsPathString
-            .removePrefix("/")
-
-        return parseAsImage(absolutePathImage)
-    }
-
-    private fun getPTraverse(node: org.jsoup.nodes.Node): String {
-        fun innerTraverse(node: org.jsoup.nodes.Node): String =
-            node.childNodes().joinToString("") { child ->
-                when {
-                    child.nodeName() == "br" -> "\n"
-                    child.nodeName() == "img" -> declareImgEntry(child)
-                    child.nodeName() == "image" -> declareImgEntry(child)
-                    child is TextNode -> child.text()
-                    else -> innerTraverse(child)
-                }
-            }
-
-        val paragraph = innerTraverse(node).trim()
-        return if (paragraph.isEmpty()) "" else innerTraverse(node).trim() + "\n\n"
-    }
-
-    private fun getNodeTextTraverse(node: org.jsoup.nodes.Node): String {
-        val children = node.childNodes()
-        if (children.isEmpty())
-            return ""
-
-        return children.joinToString("") { child ->
-            when {
-                child.nodeName() == "p" -> getPTraverse(child)
-                child.nodeName() == "br" -> "\n"
-                child.nodeName() == "hr" -> "\n\n"
-                child.nodeName() == "img" -> declareImgEntry(child)
-                child.nodeName() == "image" -> declareImgEntry(child)
-                child is TextNode -> {
-                    val text = child.text().trim()
-                    if (text.isEmpty()) "" else text + "\n\n"
-                }
-
-                else -> getNodeTextTraverse(child)
-            }
-        }
-    }
-
-    private fun getNodeStructuredText(node: org.jsoup.nodes.Node): String {
-        val children = node.childNodes()
-        if (children.isEmpty())
-            return ""
-
-        return children.joinToString("") { child ->
-            when {
-                child.nodeName() == "p" -> getPTraverse(child)
-                child.nodeName() == "br" -> "\n"
-                child.nodeName() == "hr" -> "\n\n"
-                child.nodeName() == "img" -> declareImgEntry(child)
-                child.nodeName() == "image" -> declareImgEntry(child)
-                child is TextNode -> child.text().trim()
-                else -> getNodeTextTraverse(child)
-            }
-        }
-    }
-}
-
-
-//@Throws(Exception::class)
-//suspend fun epubCoverParser(
-//    inputStream: InputStream
-//): EpubImage? = withContext(Dispatchers.Default) {
-//    val files = getZipFiles(inputStream)
-//
-//    val container = files["META-INF/container.xml"]
-//        ?: throw Exception("META-INF/container.xml file missing")
-//
-//    val opfFilePath = parseXMLFile(container.data)
-//        ?.selectFirstTag("rootfile")
-//        ?.getAttributeValue("full-path")
-//        ?.decodedURL ?: throw Exception("Invalid container.xml file")
-//
-//    val opfFile = files[opfFilePath] ?: throw Exception(".opf file missing")
-//
-//    val document = parseXMLFile(opfFile.data)
-//        ?: throw Exception(".opf file failed to parse data")
-//    val metadata = document.selectFirstTag("metadata")
-//        ?: throw Exception(".opf file metadata section missing")
-//    val manifest = document.selectFirstTag("manifest")
-//        ?: throw Exception(".opf file manifest section missing")
-//
-//
-//    val metadataCoverId = metadata
-//        .selectChildTag("meta")
-//        .find { it.getAttributeValue("name") == "cover" }
-//        ?.getAttributeValue("content")
-//
-//    val hrefRootPath = File(opfFilePath).parentFile ?: File("")
-//    fun String.hrefAbsolutePath() = File(hrefRootPath, this).canonicalFile
-//        .toPath()
-//        .invariantSeparatorsPathString
-//        .removePrefix("/")
-//
-//    data class EpubManifestItem(
-//        val id: String,
-//        val absoluteFilePath: String,
-//        val mediaType: String,
-//        val properties: String
-//    )
-//
-//    val manifestItems = manifest
-//        .selectChildTag("item").map {
-//            EpubManifestItem(
-//                id = it.getAttribute("id"),
-//                absoluteFilePath = it.getAttribute("href").decodedURL.hrefAbsolutePath(),
-//                mediaType = it.getAttribute("media-type"),
-//                properties = it.getAttribute("properties")
-//            )
-//        }.associateBy { it.id }
-//
-//    manifestItems[metadataCoverId]
-//        ?.let { files[it.absoluteFilePath] }
-//        ?.let { EpubImage(absPath = it.absPath, image = it.data) }
-//}

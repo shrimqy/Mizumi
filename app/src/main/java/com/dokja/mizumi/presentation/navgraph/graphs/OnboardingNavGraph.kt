@@ -8,8 +8,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.dokja.mizumi.presentation.navgraph.Graph
 import com.dokja.mizumi.presentation.navgraph.OnboardingRoute
-import com.dokja.mizumi.presentation.onboarding.OnBoardingScreen
-import com.dokja.mizumi.presentation.onboarding.OnBoardingViewModel
+import com.dokja.mizumi.presentation.more.onboarding.OnBoardingScreen
+import com.dokja.mizumi.presentation.more.onboarding.OnBoardingViewModel
 
 fun NavGraphBuilder.onBoardingNavGraph(rootNavController: NavHostController) {
     navigation(

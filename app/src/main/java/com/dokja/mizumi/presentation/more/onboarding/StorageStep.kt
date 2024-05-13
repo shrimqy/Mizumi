@@ -1,4 +1,4 @@
-package com.dokja.mizumi.presentation.onboarding
+package com.dokja.mizumi.presentation.more.onboarding
 
 import android.content.ActivityNotFoundException
 import androidx.compose.foundation.layout.Arrangement
@@ -33,12 +33,13 @@ fun StorageContent() {
 //        verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
     ) {
         Text(
+
             stringResource(
                 R.string.onboarding_storage_info,
                 stringResource(R.string.app_name),
 //                SettingsDataScreen.s,
             ),
-            color = colorResource(id = R.color.text_medium)
+            color = colorResource(id = R.color.text_medium),
         )
 
         Button(

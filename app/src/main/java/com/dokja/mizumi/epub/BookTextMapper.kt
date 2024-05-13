@@ -11,8 +11,6 @@ object BookTextMapper {
          * Current versions: v1
          */
         companion object {
-
-
             fun fromXMLString(text: String): ImgEntry? {
                 return fromXMLStringV0(text) ?: fromXMLStringV1(text)
             }

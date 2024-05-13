@@ -1,4 +1,4 @@
-package com.dokja.mizumi.presentation.onboarding.components
+package com.dokja.mizumi.presentation.more.onboarding.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.dokja.mizumi.R
 import com.dokja.mizumi.presentation.Dimens
 import com.dokja.mizumi.presentation.Dimens.MediumPadding2
-import com.dokja.mizumi.presentation.onboarding.Page
+import com.dokja.mizumi.presentation.more.onboarding.Page
 import com.dokja.mizumi.presentation.utils.padding
 
 @Composable
