@@ -2,6 +2,8 @@ package com.dokja.mizumi.presentation.more.onboarding
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import com.dokja.mizumi.presentation.model.setAppCompatDelegateThemeMode
+import com.dokja.mizumi.presentation.more.settings.widget.AppThemeModePreferenceWidget
 
 class ThemeStep {
     @Composable

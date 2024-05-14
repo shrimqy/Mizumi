@@ -9,6 +9,8 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.dokja.mizumi.domain.manager.LocalUserManager
+import com.dokja.mizumi.domain.ui.model.AppTheme
+import com.dokja.mizumi.presentation.model.ThemeMode
 import com.dokja.mizumi.utils.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -39,6 +41,12 @@ data class ReaderPreferences(
     val readerTTSPitch: Float
 )
 
+data class ThemePreferences(
+    val isAmoled: Boolean,
+    val appTheme: AppTheme,
+    val themeMode: ThemeMode
+)
+
 
 class LocalUserManagerImpl(
     private val context: Context
@@ -60,6 +68,12 @@ class LocalUserManagerImpl(
         val VOICE_ID = stringPreferencesKey("voice_id")
         val VOICE_SPEED = stringPreferencesKey("voice_speed")
         val VOICE_PITCH = stringPreferencesKey("voice_pitch")
+    }
+
+    private object UiPreferenceKeys{
+        val THEME_MODE = stringPreferencesKey("theme_mode")
+        val APP_THEME = stringPreferencesKey("app_theme")
+        val DARK_AMOLED = booleanPreferencesKey("dark_amoled")
     }
 
     object UserTokenKey {
@@ -91,6 +105,17 @@ class LocalUserManagerImpl(
         }
     }
 
+    override fun appTheme(): Flow<ThemePreferences> {
+        return datastore.data.catch {
+            emit(emptyPreferences())
+        }.map { preferences->
+            val isAmoled = preferences[UiPreferenceKeys.DARK_AMOLED] ?: false
+            val appTheme = AppTheme.valueOf(preferences[UiPreferenceKeys.APP_THEME] ?: AppTheme.DEFAULT.name)
+            val themeMode = ThemeMode.valueOf(preferences[UiPreferenceKeys.THEME_MODE] ?: ThemeMode.SYSTEM.name)
+            ThemePreferences(isAmoled, appTheme, themeMode)
+        }
+    }
+
     override fun userBookPreferences(): Flow<UserPreferences>  {
         return datastore.data.catch {
             emit(emptyPreferences())
@@ -106,8 +131,7 @@ class LocalUserManagerImpl(
     override fun userReaderPreferences(): Flow<ReaderPreferences>  {
         return datastore.data.catch {
             emit(emptyPreferences())
-        }
-            .map { preferences->
+        }.map { preferences->
                 val fontSize = preferences[ReaderPreferenceKeys.FONT_SIZE] ?: "15.6f"
                 val fontFamily = preferences[ReaderPreferenceKeys.FONT_FAMILY] ?: "serif"
                 val voiceId = preferences[ReaderPreferenceKeys.VOICE_ID] ?: ""
@@ -116,6 +140,16 @@ class LocalUserManagerImpl(
                 ReaderPreferences(fontSize.toFloat(), fontFamily, voiceId, voiceSpeed.toFloat(), voicePitch.toFloat())
             }
     }
+
+
+
+//    override fun userAppThemePreferences() {
+//        return datastore.data.catch {
+//            emit(emptyPreferences())
+//        }.map { theme->
+//            val appThem
+//        }
+//    }
 
     override suspend fun updateSort(sortOrder: SortOrder) {
         datastore.edit { preferences->
