@@ -13,7 +13,8 @@ interface LocalUserManager {
     fun userBookPreferences(): Flow<UserPreferences>
     fun userReaderPreferences(): Flow<ReaderPreferences>
 
-    fun appTheme(): Flow<ThemePreferences>
+    fun readAppTheme(): Flow<ThemePreferences>
+    suspend fun updateAppTheme(themePreferences: ThemePreferences)
     suspend fun updateSort(sortOrder: SortOrder)
     suspend fun updateUnread(showUnread: Boolean)
 

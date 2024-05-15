@@ -105,7 +105,16 @@ class LocalUserManagerImpl(
         }
     }
 
-    override fun appTheme(): Flow<ThemePreferences> {
+
+    override suspend fun updateAppTheme(themePreferences: ThemePreferences) {
+         datastore.edit { preferences->
+            preferences[UiPreferenceKeys.DARK_AMOLED] = themePreferences.isAmoled
+            preferences[UiPreferenceKeys.APP_THEME] = themePreferences.appTheme.name
+            preferences[UiPreferenceKeys.THEME_MODE] = themePreferences.themeMode.name
+        }
+    }
+
+    override fun readAppTheme(): Flow<ThemePreferences> {
         return datastore.data.catch {
             emit(emptyPreferences())
         }.map { preferences->

@@ -71,8 +71,8 @@ import com.dokja.mizumi.presentation.book.components.TriStateItem
 import com.dokja.mizumi.presentation.common.VerticalFastScroller
 import com.dokja.mizumi.presentation.common.screens.EmptyScreen
 import com.dokja.mizumi.presentation.reader.ReaderActivity
-import com.dokja.mizumi.utils.isScrolledToEnd
-import com.dokja.mizumi.utils.isScrollingUp
+import com.dokja.mizumi.presentation.common.isScrolledToEnd
+import com.dokja.mizumi.presentation.common.isScrollingUp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

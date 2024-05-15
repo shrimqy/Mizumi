@@ -1,4 +1,4 @@
-package com.dokja.mizumi.utils
+package com.dokja.mizumi.presentation.common
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
