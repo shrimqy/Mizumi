@@ -1,12 +1,17 @@
 package com.dokja.mizumi.presentation.reader
 
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.dokja.mizumi.data.manager.ReaderPreferences
+import com.dokja.mizumi.data.manager.ThemePreferences
 import com.dokja.mizumi.domain.manager.LocalUserManager
+import com.dokja.mizumi.domain.ui.model.AppTheme
 import com.dokja.mizumi.presentation.BaseViewModel
+import com.dokja.mizumi.presentation.model.ThemeMode
 import com.dokja.mizumi.presentation.reader.manager.ReaderManager
 import com.dokja.mizumi.presentation.reader.manager.ReaderManagerViewCallReferences
 import com.dokja.mizumi.presentation.utils.StateExtraBoolean
@@ -58,7 +63,8 @@ class ReaderViewModel @Inject constructor(
     )
     val readerPreferences: MutableStateFlow<ReaderPreferences> = _readerPreferences
 
-
+    var uiPreferences by mutableStateOf(ThemePreferences(false, AppTheme.DEFAULT, ThemeMode.SYSTEM))
+        private set
 
     fun updateTracker() {
         val userId = localUserManager.readUserToken()

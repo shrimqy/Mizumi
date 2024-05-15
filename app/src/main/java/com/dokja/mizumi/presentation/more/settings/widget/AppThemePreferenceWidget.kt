@@ -39,7 +39,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import com.dokja.mizumi.R
 import com.dokja.mizumi.domain.ui.model.AppTheme
+import com.dokja.mizumi.presentation.common.MangaCover
+import com.dokja.mizumi.presentation.theme.MizumiTheme
 import com.dokja.mizumi.presentation.utils.padding
 import com.dokja.mizumi.presentation.utils.secondaryItemAlpha
 import com.dokja.mizumi.utils.DeviceUtil
@@ -86,7 +89,7 @@ private fun AppThemesList(
                     .width(114.dp)
                     .padding(top = 8.dp),
             ) {
-                TachiyomiTheme(
+                MizumiTheme(
                     appTheme = appTheme,
                     amoled = amoled,
                 ) {
@@ -165,7 +168,7 @@ fun AppThemePreviewItem(
                 if (selected) {
                     Icon(
                         imageVector = Icons.Filled.CheckCircle,
-                        contentDescription = stringResource(MR.strings.selected),
+                        contentDescription = stringResource(R.string.selected),
                         tint = MaterialTheme.colorScheme.primary,
                     )
                 }

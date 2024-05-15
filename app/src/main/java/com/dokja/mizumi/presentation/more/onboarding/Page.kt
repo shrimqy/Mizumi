@@ -27,7 +27,7 @@ val pages = listOf(
         title = null,
         description = null,
         image = null,
-        content = { StorageContent() }
+        content = { ThemeStep() }
     ),
 
 )

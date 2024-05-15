@@ -1,23 +1,13 @@
 package com.dokja.mizumi.presentation.theme
 
-import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
-import com.dokja.mizumi.domain.manager.LocalUserManager
 import com.dokja.mizumi.domain.ui.model.AppTheme
+import com.dokja.mizumi.presentation.model.ThemeMode
 import com.dokja.mizumi.presentation.theme.colorscheme.BaseColorScheme
 import com.dokja.mizumi.presentation.theme.colorscheme.GreenAppleColorScheme
 import com.dokja.mizumi.presentation.theme.colorscheme.LavenderColorScheme
@@ -31,32 +21,28 @@ import com.dokja.mizumi.presentation.theme.colorscheme.TealTurqoiseColorScheme
 import com.dokja.mizumi.presentation.theme.colorscheme.TidalWaveColorScheme
 import com.dokja.mizumi.presentation.theme.colorscheme.YinYangColorScheme
 import com.dokja.mizumi.presentation.theme.colorscheme.YotsubaColorScheme
-import com.dokja.mizumi.utils.DeviceUtil
-import com.dokja.mizumi.utils.isDynamicColorAvailable
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun MizumiTheme(
-    appTheme: AppTheme? = null,
-    amoled: Boolean? = null,
+    appTheme: AppTheme,
+    amoled: Boolean,
+    themeMode: ThemeMode? = null,
     content: @Composable () -> Unit,
 ) {
+//    if uiPreferences.(DeviceUtil.isDynamicColorAvailable) { AppTheme.MONET } else { AppTheme.DEFAULT },
 
-    val uiPreferences = localUserManager.readAppTheme()
-    if uiPreferences.(DeviceUtil.isDynamicColorAvailable) { AppTheme.MONET } else { AppTheme.DEFAULT },
-
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = android.graphics.Color.TRANSPARENT
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
-        }
-    }
+//    val view = LocalView.current
+//    if (!view.isInEditMode) {
+//        SideEffect {
+//            val window = (view.context as Activity).window
+//            window.statusBarColor = android.graphics.Color.TRANSPARENT
+//            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+//        }
+//    }
 
     BaseMizumiTheme(
-        appTheme = appTheme ?: uiPreferences.,
-        isAmoled = amoled ?: uiPreferences.themeDarkAmoled().get(),
+        appTheme = appTheme,
+        isAmoled = amoled,
         content = content,
     )
 }

@@ -2,35 +2,33 @@ package com.dokja.mizumi.presentation.more.onboarding
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import com.dokja.mizumi.presentation.model.setAppCompatDelegateThemeMode
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.dokja.mizumi.presentation.more.settings.widget.AppThemeModePreferenceWidget
+import com.dokja.mizumi.presentation.more.settings.widget.AppThemePreferenceWidget
 
-class ThemeStep {
     @Composable
-    fun Content() {
-        val themeModePref = uiPreferences.themeMode()
-        val themeMode by themeModePref.collectAsState()
-
-        val appThemePref = uiPreferences.appTheme()
-        val appTheme by appThemePref.collectAsState()
-
-        val amoledPref = uiPreferences.themeDarkAmoled()
-        val amoled by amoledPref.collectAsState()
+    fun ThemeStep() {
+        val viewModel: OnBoardingViewModel = hiltViewModel()
+        val themeMode = viewModel.uiPreferences.themeMode
+        val appTheme = viewModel.uiPreferences.appTheme
+        val amoled = viewModel.uiPreferences.isAmoled
 
         Column {
             AppThemeModePreferenceWidget(
                 value = themeMode,
                 onItemClick = {
-                    themeModePref.set(it)
-                    setAppCompatDelegateThemeMode(it)
+//                    themeModePref.set(it)
+//                    setAppCompatDelegateThemeMode(it)
                 },
             )
 
             AppThemePreferenceWidget(
                 value = appTheme,
                 amoled = amoled,
-                onItemClick = { appThemePref.set(it) },
+                onItemClick = {
+//                    appThemePref.set(it)
+                              },
             )
         }
     }
-}
+

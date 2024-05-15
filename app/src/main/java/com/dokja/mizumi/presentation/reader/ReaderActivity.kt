@@ -239,7 +239,11 @@ class ReaderActivity : BaseActivity() {
 //            }
 
         setContent {
-            MizumiTheme {
+            MizumiTheme(
+                appTheme = viewModel.uiPreferences.appTheme,
+                themeMode = viewModel.uiPreferences.themeMode,
+                amoled = viewModel.uiPreferences.isAmoled
+            ) {
                 // Reader info
                 ReaderScreen(
                     state = viewModel.state,

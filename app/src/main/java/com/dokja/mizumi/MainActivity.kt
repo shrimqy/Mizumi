@@ -32,7 +32,11 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            MizumiTheme {
+            MizumiTheme(
+                appTheme = viewModel.uiPreferences.appTheme,
+                amoled = viewModel.uiPreferences.isAmoled,
+                themeMode = viewModel.uiPreferences.themeMode
+            ) {
                 Box(
                     modifier = Modifier
                         .background(color = MaterialTheme.colorScheme.background)
