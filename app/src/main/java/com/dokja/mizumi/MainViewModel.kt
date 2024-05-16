@@ -13,6 +13,8 @@ import com.dokja.mizumi.presentation.model.ThemeMode
 import com.dokja.mizumi.presentation.navgraph.Graph
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -30,8 +32,8 @@ class MainViewModel @Inject constructor(
     var startDestination by mutableStateOf(Graph.MainScreenGraph)
         private set
 
-    var uiPreferences by mutableStateOf(ThemePreferences(false, AppTheme.DEFAULT, ThemeMode.SYSTEM))
-        private set
+    private val _uiPreferences = MutableStateFlow(ThemePreferences(false, AppTheme.DEFAULT, ThemeMode.SYSTEM))
+    val uiPreferences: MutableStateFlow<ThemePreferences> = _uiPreferences
 
     init {
         appEntryUseCases.readAppEntry().onEach { shouldStartFromHomeScreen ->
@@ -45,8 +47,8 @@ class MainViewModel @Inject constructor(
         }.launchIn(viewModelScope)
 
         viewModelScope.launch {
-            localUserManager.readAppTheme().collect{
-                uiPreferences = it
+            localUserManager.readAppTheme().collectLatest {
+                _uiPreferences.value = it
             }
         }
     }

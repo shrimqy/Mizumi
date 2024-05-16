@@ -1,5 +1,6 @@
 package com.dokja.mizumi.presentation.model
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 
 enum class ThemeMode {
@@ -9,6 +10,7 @@ enum class ThemeMode {
 }
 
 fun setAppCompatDelegateThemeMode(themeMode: ThemeMode) {
+    Log.d("themeMode", "$themeMode")
     AppCompatDelegate.setDefaultNightMode(
         when (themeMode) {
             ThemeMode.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO

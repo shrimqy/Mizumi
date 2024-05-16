@@ -9,7 +9,12 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
@@ -32,18 +37,25 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
+            val uiPreferences by viewModel.uiPreferences.collectAsState()
+
             MizumiTheme(
-                appTheme = viewModel.uiPreferences.appTheme,
-                amoled = viewModel.uiPreferences.isAmoled,
-                themeMode = viewModel.uiPreferences.themeMode
+                appTheme = uiPreferences.appTheme,
+                amoled = uiPreferences.isAmoled,
+                themeMode = uiPreferences.themeMode
             ) {
-                Box(
-                    modifier = Modifier
-                        .background(color = MaterialTheme.colorScheme.background)
-                        .fillMaxSize()
+                CompositionLocalProvider(
+                    LocalTextStyle provides MaterialTheme.typography.bodySmall,
+                    LocalContentColor provides MaterialTheme.colorScheme.onBackground,
                 ) {
-                    val startDestination = viewModel.startDestination
-                    RootNavGraph(startDestination = startDestination)
+                    Box(
+                        modifier = Modifier
+                            .background(color = MaterialTheme.colorScheme.background)
+                            .fillMaxSize()
+                    ) {
+                        val startDestination = viewModel.startDestination
+                        RootNavGraph(startDestination = startDestination)
+                    }
                 }
             }
         }

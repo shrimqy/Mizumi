@@ -69,7 +69,7 @@ fun OnBoardingScreen(
                 derivedStateOf {
                     when(pagerState.currentPage) {
                         0 -> listOf("", "Get Started")
-                        1 -> listOf("", "I Understand")
+                        1 -> listOf("", "Next")
                         2 -> listOf("", "Next")
                         else -> listOf("", "")
                     }
@@ -118,7 +118,7 @@ fun OnBoardingScreen(
                         text = buttonState.value[1],
                         onClick = {
                             scope.launch {
-                                if (pagerState.currentPage == 2) {
+                                if (pagerState.currentPage == 1) {
 //                                    rootNavController.navigate(AuthScreenGraph.Login.route)
                                     notificationPermissionResultLauncher.launch(
                                         Manifest.permission.POST_NOTIFICATIONS

@@ -105,7 +105,7 @@ private fun AppThemesList(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = stringResource(appTheme.titleRes!!),
+                    text = stringResource(appTheme.titleRes),
                     modifier = Modifier
                         .fillMaxWidth()
                         .secondaryItemAlpha(),

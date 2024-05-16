@@ -4,6 +4,7 @@ import com.dokja.mizumi.data.manager.ReaderPreferences
 import com.dokja.mizumi.data.manager.SortOrder
 import com.dokja.mizumi.data.manager.ThemePreferences
 import com.dokja.mizumi.data.manager.UserPreferences
+import com.dokja.mizumi.presentation.model.ThemeMode
 import kotlinx.coroutines.flow.Flow
 
 interface LocalUserManager {
@@ -15,6 +16,7 @@ interface LocalUserManager {
 
     fun readAppTheme(): Flow<ThemePreferences>
     suspend fun updateAppTheme(themePreferences: ThemePreferences)
+    suspend fun updateThemeMode(themeMode: ThemeMode)
     suspend fun updateSort(sortOrder: SortOrder)
     suspend fun updateUnread(showUnread: Boolean)
 

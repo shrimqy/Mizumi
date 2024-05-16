@@ -8,7 +8,15 @@ import com.dokja.mizumi.di.AppModule
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-open class BaseActivity : AppCompatActivity() {
+open class BaseActivity :
+    AppCompatActivity()
+//    ThemingDelegate by ThemingDelegateImpl()
+{
+//
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        applyAppTheme(this)
+//        super.onCreate(savedInstanceState)
+//    }
 
     val appPreferences: AppPreferences by lazy { AppModule.provideAppPreferences(applicationContext) }
 
