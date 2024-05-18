@@ -37,7 +37,7 @@ fun OnBoardingPage(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = 400.dp) // Adjust the minimum height as needed
+            .heightIn(min = 600.dp) // Adjust the minimum height as needed
     ) {
         Column(
             modifier = Modifier

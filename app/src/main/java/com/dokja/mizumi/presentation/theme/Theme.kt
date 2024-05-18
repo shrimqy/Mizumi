@@ -7,8 +7,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.dokja.mizumi.MainViewModel
 import com.dokja.mizumi.domain.ui.model.AppTheme
 import com.dokja.mizumi.presentation.model.ThemeMode
 import com.dokja.mizumi.presentation.theme.colorscheme.BaseColorScheme
@@ -27,13 +31,15 @@ import com.dokja.mizumi.presentation.theme.colorscheme.YotsubaColorScheme
 
 @Composable
 fun MizumiTheme(
-    appTheme: AppTheme,
-    amoled: Boolean,
+    appTheme: AppTheme? = null,
+    amoled: Boolean? = null,
     themeMode: ThemeMode? = null,
     content: @Composable () -> Unit,
 ) {
 //    if uiPreferences.(DeviceUtil.isDynamicColorAvailable) { AppTheme.MONET } else { AppTheme.DEFAULT },
 
+    val viewModel: MainViewModel = hiltViewModel()
+    val uiPreferences by viewModel.uiPreferences.collectAsState()
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -44,8 +50,8 @@ fun MizumiTheme(
     }
 
     BaseMizumiTheme(
-        appTheme = appTheme,
-        isAmoled = amoled,
+        appTheme = appTheme ?: uiPreferences.appTheme,
+        isAmoled = amoled ?: uiPreferences.isAmoled,
         content = content,
     )
 }

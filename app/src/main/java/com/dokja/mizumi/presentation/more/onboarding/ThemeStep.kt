@@ -26,7 +26,6 @@ import com.dokja.mizumi.presentation.more.settings.widget.AppThemePreferenceWidg
                     setAppCompatDelegateThemeMode(it)
                 },
             )
-
             AppThemePreferenceWidget(
                 value = appTheme,
                 amoled = amoled,

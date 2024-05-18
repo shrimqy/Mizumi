@@ -1,19 +1,21 @@
 package com.dokja.mizumi.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -24,6 +26,9 @@ import com.dokja.mizumi.presentation.common.material.NavBar
 import com.dokja.mizumi.presentation.common.material.NavigationItem
 import com.dokja.mizumi.presentation.navgraph.MainRouteScreen
 import com.dokja.mizumi.presentation.navgraph.graphs.MainNavGraph
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 
 @OptIn(ExperimentalAnimationGraphicsApi::class)
 @Composable
@@ -31,6 +36,9 @@ fun MainScreen(
     rootNavController: NavHostController,
     homeNavController: NavHostController = rememberNavController()
 ) {
+
+    val showBottomNavEvent = Channel<Boolean>()
+
     val libraryAnimatedIcon = AnimatedImageVector.animatedVectorResource(R.drawable.anim_library_enter)
     val moreAnimatedIcon = AnimatedImageVector.animatedVectorResource(R.drawable.anim_more_enter)
     val browseAnimatedIcon = AnimatedImageVector.animatedVectorResource(R.drawable.anim_browse_enter)
@@ -84,33 +92,43 @@ fun MainScreen(
 
         bottomBar = {
             if (isBarVisible) {
-                NavBar(
-                    items = navigationItem,
-                    selectedItem = selectedItem,
-                    onItemClick = { index ->
-                        when (index) {
-                            0 -> navigateToTab(
-                                navController = homeNavController,
-                                route = MainRouteScreen.Library.route
-                            )
+                val bottomNavVisible by produceState(initialValue = true) {
+                    showBottomNavEvent.receiveAsFlow().collectLatest { value = it }
+                }
+                AnimatedVisibility(
+                    visible = bottomNavVisible,
+                    enter = expandVertically(),
+                    exit = shrinkVertically(),
+                ) {
+                    NavBar(
+                        items = navigationItem,
+                        selectedItem = selectedItem,
+                        onItemClick = { index ->
+                            when (index) {
+                                0 -> navigateToTab(
+                                    navController = homeNavController,
+                                    route = MainRouteScreen.Library.route
+                                )
 
-                            1 -> navigateToTab(
-                                navController = homeNavController,
-                                route = MainRouteScreen.History.route
-                            )
+                                1 -> navigateToTab(
+                                    navController = homeNavController,
+                                    route = MainRouteScreen.History.route
+                                )
 
-                            2 -> navigateToTab(
-                                navController = homeNavController,
-                                route = MainRouteScreen.Browse.route
-                            )
+                                2 -> navigateToTab(
+                                    navController = homeNavController,
+                                    route = MainRouteScreen.Browse.route
+                                )
 
-                            3 -> navigateToTab(
-                                navController = homeNavController,
-                                route = MainRouteScreen.Profile.route
-                            )
+                                3 -> navigateToTab(
+                                    navController = homeNavController,
+                                    route = MainRouteScreen.Profile.route
+                                )
+                            }
                         }
-                    }
-                )
+                    )
+                }
+
             }
         }
     ) {innerPadding ->
